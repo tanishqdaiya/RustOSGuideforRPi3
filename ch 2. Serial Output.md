@@ -133,7 +133,7 @@ let uart = Uart;
 uart.write_byte(b'A');
 ```
 
-According to the documentation bit 5 in `AUX_MU_LSR_REG` is set to 1 when a byte can be written to TX. So in `write_byte()` we simply wait till the value of said register is of the form `X1XXXXX` and not `X0XXXXX`. And when it is the former, we know we can send a byte, which we do by writing to `AUX_MU_IO_RED` address. From their UART1 will send the bytes to the tx pin and thus to the host system, where you will be able to see it in your minicom window.
+According to the documentation bit 5 in `AUX_MU_LSR_REG` is set to 1 when UART1 is able to accept a byte meant to be sent to TX. So in `write_byte()` we simply wait till the value of said register is of the form `X1XXXXX` and not `X0XXXXX`. And when it is the former, we know we can send a byte, which we do by writing to `AUX_MU_IO_RED` address. From their UART1 will send the bytes to the tx pin and thus to the host system, where you will be able to see it in your minicom window.
 
 # Traits in Rust
 
@@ -145,7 +145,7 @@ In order to implement some trait in your Rust class/struct, you need to define s
 
 The advantage of implementing the `Write` trait to our `Uart` is suddenly you inlock the `Uart.write_fmt` method. This is useful in string formatting. Because the `write_fmt` method automatically handles string formatting.
 
-# println!
+# `println!`
 
 Technically you can already print things. E.g.
 
