@@ -602,6 +602,16 @@ unsafe { core::arch::asm!("svc #0"); }
 println!("Returned from exception!").unwrap();
 ```
 
+Also since we have a new assembly file `./src/kernel/exceptions.s`, modify `./build.rs` to also compile it along side our `entry.S`
+```rs
+    cc::Build::new()
+        .file("entry.S")
+        .file("src/kernel/exceptions.s")
+        .compiler("aarch64-linux-gnu-gcc")
+        .flag("-c")
+        .compile("entry");
+```
+
 Now simply build your `kernel8.img`, and then write it to your memory card and boot it on your RPi. Or, build your `kernel8.img` and then run it in QEMU (Raspberry Pi 3b+ emulator) as follows:
 
 ```bash
@@ -662,6 +672,64 @@ Returned from exception!
 And that means that exception handling is successfully implemented.
 
 # Final codes
+
+If the commands for building and running are getting out of hand, you can use makefiles!
+Here is the makefile that I use:
+
+```make
+TARGET = aarch64-unknown-none
+KERNEL = at-os
+BUILD = target/$(TARGET)/release/$(KERNEL)
+
+OBJCOPY = aarch64-linux-gnu-objcopy
+
+QEMU = qemu-system-aarch64
+
+# Default target
+all: kernel8.img
+
+# Build release
+build:
+	cargo build --release --target $(TARGET)
+
+# Convert ELF to raw binary
+kernel8.img: build
+	$(OBJCOPY) $(BUILD) -O binary kernel8.img
+
+# Run in QEMU (Emulating Raspberry Pi 3B+ with Mini UART redirected to terminal)
+run:
+	$(QEMU) -M raspi3b -kernel kernel8.img -serial null -serial stdio
+
+# Clean everything
+clean:
+	cargo clean
+	rm -f kernel8.img
+```
+And then you can do `make clean` to cleanup, `make build` to compile project and produce `kernel8.img`, and `make run` to run the image in QEMU.
+
+`linker.ld`
+```ld
+ENTRY(_start)
+
+SECTIONS
+{
+    . = 0x80000;
+
+    .text :
+    {
+        *(.text.boot)
+        *(.text.vectors)
+        *(.text*)
+    }
+
+    .rodata : { *(.rodata*) }
+    .data   : { *(.data*) }
+    .bss    : { *(.bss*) }
+
+    . = ALIGN(16);
+    _stack_top = . + 0x4000;
+}
+```
 
 `src/kernel/exceptions.s`
 ```asm
@@ -991,6 +1059,27 @@ pub extern "C" fn handle_exception_el1(ctx: &mut ExceptionContext) {
         println!("  x{:02} = {:#018x}", i, ctx.x[i]).unwrap();
     }
     println!("=========================").unwrap();
+}
+```
+
+`./kernel/mod.rs`
+```rust
+pub mod peripherals;
+pub mod exceptions;
+```
+
+`./build.rs`
+```rust
+fn main() {
+    println!("cargo:rerun-if-changed=entry.S");
+    println!("cargo:rerun-if-changed=src/kernel/exceptions.s");
+
+    cc::Build::new()
+        .file("entry.S")
+        .file("src/kernel/exceptions.s")
+        .compiler("aarch64-linux-gnu-gcc")
+        .flag("-c")
+        .compile("entry");
 }
 ```
 
