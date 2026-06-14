@@ -283,7 +283,7 @@ mod kernel;
 use core::panic::PanicInfo;
 
 #[no_mangle]
-pub extern "C" fn _start() -> ! {
+pub extern "C" fn main() -> ! {
     println!("\r\nWelcome to, AtOS.").unwrap();
     loop {}
 }
