@@ -141,7 +141,7 @@ Now, in order to switch to EL1 mode. All we need to do is set Bits 4:0 to 64 bit
 
 We can do this during our entry assembly.
 
-Now, in our entry.S instead of directly doing `bl _rust_main` we do:
+Now, in our entry.S instead of directly doing `bl main` we do:
 
 ```arm
 // EL stack pointer
@@ -157,7 +157,7 @@ orr     x0, x0, #(0b1111 << 6) // mask all exceptions (D, A, I, F)
 msr     SPSR_EL2, x0
 
 // finally set the ERET PC
-adr     x0, _rust_main
+adr     x0, main
 msr     ELR_EL2, x0
 
 eret // insane
@@ -593,7 +593,7 @@ Of course, to test the exception handler, you need to first cause an exception.
 
 There is an instruction `svc`. Which is used to manually cause synchronous exceptions. It has many uses. But right now it will help us cause an exception so we can watch our handler handle it.
 
-So now in your `main.rs`, Somewhere in the `_rust_main` function add:
+So now in your `main.rs`, Somewhere in the `main` function add:
 
 ```rs
 println!("\r\nWelcome to, AtOS.").unwrap();
@@ -1029,7 +1029,7 @@ mod kernel;
 use core::panic::PanicInfo;
 
 #[no_mangle]
-pub extern "C" fn _start() -> ! {
+pub extern "C" fn main() -> ! {
     println!("\r\nWelcome to, AtOS.").unwrap();
     println!("Current EL is: EL{}", get_current_el()).unwrap();
     unsafe { core::arch::asm!("svc #0"); }
