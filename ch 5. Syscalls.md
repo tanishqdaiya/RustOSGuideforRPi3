@@ -252,7 +252,7 @@ pub fn handle_syscall(ctx: &ExceptionContext) -> () {
     match syscall_number {
         1 => sys_print(ctx).unwrap(),
         _ => {
-            print!("Unknown syscall: {}", ctx.x[8]).unwrap();
+            print!("Unknown syscall: {}", syscall_number).unwrap();
         }
     }
 }
