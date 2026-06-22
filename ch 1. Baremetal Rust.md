@@ -326,9 +326,9 @@ panic = "abort"
 ```
 
 The rest of the files you can find an identical version at
-https://github.com/ZackyGameDev/AtOS/tree/81fcfb3cbdbd0fb0add78b5c89ff8e5bad70d260
+[github.com/ZackyGameDev/AtOS/tree/81fcfb3cbdbd0fb0add78b5c89ff8e5bad70d260](https://github.com/ZackyGameDev/AtOS/tree/81fcfb3cbdbd0fb0add78b5c89ff8e5bad70d260)
 (Do note, the naming may differ, also main.rs is different at this commit, please ignore it.)
 
 ## Other readings
-https://os.phil-opp.com/freestanding-rust-binary/
+[os.phil-opp.com/freestanding-rust-binary/](https://os.phil-opp.com/freestanding-rust-binary/)
 Excellent blog, though it is targetted for a different hardware, it is still an amazing read that covers a lot more.

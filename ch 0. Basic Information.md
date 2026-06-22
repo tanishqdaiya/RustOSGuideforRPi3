@@ -56,6 +56,6 @@ TODO — low priority <br>
 You can probably find resources to explain this easily. <br>
 
 But for example: <br>
-https://www.geeksforgeeks.org/computer-organization-architecture/different-classes-of-cpu-registers/ <br>
-https://dev.to/serputov/aarch64-x86-64-registers-and-instruction-quick-start-19bd <br>
-https://en.wikipedia.org/wiki/Stack-based_memory_allocation
+[www.geeksforgeeks.org/computer-organization-architecture/different-classes-of-cpu-registers/](https://www.geeksforgeeks.org/computer-organization-architecture/different-classes-of-cpu-registers/) <br>
+[dev.to/serputov/aarch64-x86-64-registers-and-instruction-quick-start-19bd](https://dev.to/serputov/aarch64-x86-64-registers-and-instruction-quick-start-19bd) <br>
+[en.wikipedia.org/wiki/Stack-based_memory_allocation](https://en.wikipedia.org/wiki/Stack-based_memory_allocation)

@@ -1,4 +1,4 @@
-# User space isolation
+# Chapter 5: Syscalls 
 
 So far what we've done is that we have created a separate project directory which acts as the place where all the user's programs and standard library will be written. Basically all the stuff that is supposed to run ON our operating system. However why did we create a separate project for it? Why couldn't we just keep growing our original operating system repository? Well, there's mainly two reasons.
 
@@ -22,11 +22,13 @@ Now, to put it plainly, most operating system standards actually expect the user
 
 This "request" to the kernel from the user program is called a "syscall". In the following text you will learn how to make your user program send these "syscalls" to the kernel and how the kernel can indentify them, handle them, and then send responses back to the user program.
 
-## Trapping to the kernel
+## Trapping to the Kernel
 
 In standard lingo you will often hear the word "trap". Usually when textbooks or lectures talk about the user program sending a request to the kernel, They call it as the user program "trapping into the kernel". What they mean by that is that like how we drop from EL1 to EL0 using the `ERET` method, we can also raise the level from EL0 to EL1. And just like how when dropping to EL0 we start off in the user program, i.e. the moment you drop to EL0 we simultanously switch to the user program's instructions in memorry. We also start in the kernel when we raise the exception level to EL1. This is usually achieved by a dedicated instruction that the EL0 program can execute which causes this to happen. This entire process of using the special instruction in a low priviledge level to manually send the priviledge to a higher level while handing over the control to the kernel is generally called as "trapping into the kernel".
 
-In ARM architecture, the special instruction that lets us send execution to kernel in EL1 is `svc`. We will learn about this instruction more. But it is short for "Supervisor Control". The word "supervisor" is an old classic name of the "kernel". It accepts one immediate argument, so the full way of writing it wuld be somethign like `svc #imm` where `imm` can be any number from 0 to 65535 (`0xFFFF`)
+In ARM architecture, the special instruction that lets us send execution to kernel in EL1 is `svc`. We will learn about this instruction more. But it is short for "Supervisor Control". The word "supervisor" is an old classic name of the "kernel". It accepts one immediate argument, so the full way of writing it would be somethign like `svc #imm` where `imm` can be any number from 0 to 65535 (`0xFFFF`)
+
+## The `svc` Instruction in ARM
 
 When `svc` instruction is executed, the behavior that is triggered in the hardware can be described as following:
 - A hardware exception occurs.
@@ -38,7 +40,7 @@ Thus the kernel's exception handler executes upon the `svc` instruction. The `sv
 
 In linux kernel, different priviledged actions like "write to disk" or "read from disk" or "create new process" are all given a unique identification number. Then before `svc` the user program stores the ID of the requested priviledged action in the `x8` register, which the kernel reads and indentifies. Once the kernel is done performing the operation requested it then does ERET from the exception back to where EL0 did `svc`. Any relevant return values are also stored in GPRs.
 
-## Implementing syscalls
+## Implementing Syscalls
 
 We are going to do a similar procedure. For the first syscall we will try to implement a `println!` macro for the user space which works using syscalls instead of accessing the MMIO directly. 
 
@@ -287,6 +289,6 @@ The final codes can be found in my original project `AtOS`'s GitHub reposiory. A
 
 Find the files at the below link. 
 
-https://github.com/ZackyGameDev/AtOS/tree/3aefd06111c004eae08ada9204a61e9242fe9a8b
+[github.com/ZackyGameDev/AtOS/tree/3aefd06111c004eae08ada9204a61e9242fe9a8b](https://github.com/ZackyGameDev/AtOS/tree/3aefd06111c004eae08ada9204a61e9242fe9a8b)
 
 (kindly ignore the timer.rs module along with the main.rs state)
