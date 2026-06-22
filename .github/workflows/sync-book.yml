@@ -1,4 +1,4 @@
-name: Sync mdBook sources
+name: Sync, Build, and Deploy Book
 
 on:
   push:
@@ -7,9 +7,15 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  sync:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +39,7 @@ jobs:
             --exclude='*' \
             main/ website/src/
 
-      - name: Commit and push
+      - name: Commit and push source sync
         run: |
           cd website
           git config user.name "github-actions[bot]"
@@ -41,3 +47,24 @@ jobs:
           git add src
           git diff --cached --quiet || git commit -m "Sync book sources from main"
           git push origin gh-pages-website
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install mdBook
+        run: cargo install mdbook
+
+      - name: Build book
+        working-directory: website
+        run: mdbook build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/book
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
