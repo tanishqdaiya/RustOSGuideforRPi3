@@ -1,5 +1,7 @@
 # UART
 
+## Preface
+
 Imagine you had the task of sending some data, specifically, a string of characters over a wire. How would you achieve it? You would have to create a system where the characters can be expressed in the form of electronic signals and then create some standard to transmit those signals to the other person, and some standard for that other person to be able to interpret those signals back to the characters they are supposed to be.
 
 This ia a classic electronics problem, with many solutions. But one of the most common standards is the Universal Asynchronous Receiver/Transmitter, UART for short.
@@ -9,21 +11,21 @@ You don't need to know the full specifics of UART to be able to work with it in 
 Let's say that the sender wishes to send some character to the receiver, in which case the sender's tx wire is connected to the receiver's rx wire. if the receiver also wishes to send any characters back to the sender, it must also have it's own tx wire and the sender will need it's own rx wire, both connected together. 
 
 [![UART Diagram](https://vanhunteradams.com/Protocols/UART/uart_hardware.png)](https://vanhunteradams.com/Protocols/UART/UART.html)
-##### (click image to go to source)
+<small> (click image to go to source) </small>
 
 The communication is digital, so the tx and rx wires have a zero or one being trasmitted, but both the devices need to agree on which voltage is considered zero. for that we have the GND (ground) pin of both the devices connected together.
 
-# Relevance 
+## Relevance 
 
 The reason we just discussed this is because this is going to be our primary mode of getting some sort of output from our RPi. Naturally the Operating System we are making is of no use if we cannot interact with it. We need to be able to somehow see what the OS is outputting (e.g. the stdout, printed statements, shell output, etc). The simplest way is to use a UART connection from the RPi to your host device (the system you're using to make the OS). Therefore, the rest of this chapter will be dedicated to setting up the UART connection from the RPi to the host, and then implementing a basic "print" function which your OS can use to send a string to the host through the UART. 
 
-# Hardware requirement
+## Hardware requirement
 
 Do note, this will require some specific hardware. The tx and rx wires of the Raspberry Pi are actually pins, but your host system likely doesn't even have pins or wires sticking out labelled "tx" or "rx". So you will need something called a "TTL to USB connector" (TTL end being female and USB end being male). the USB will be able to connect to your host and the TTL will be able to connect to your RPi.
 
 Now before you can begin coding, you actually need to setup the UART as well. By themselves the pins in the RPi do not work as UART tx/rx. You have to tell the RPi that they must serve as such.
 
-# RPi Boot Order
+## RPi Boot Order
 
 Before we can learn how to setup the RPi to employ UART, we need to understand some things about the RPi3b+. Firstly, look at your Raspberry Pi closely from top. near the center you will see a chip with the "BROADCOM" company label. That is the main processor of our RPi. But it's not actually just a CPU, it's something called a "System on Chip" (SoC). This little processor has our GPU, the CPU, Memory Controller, Timer controllers, other chips, and of course the UART controllers. The CPU which does the fetch execute cycle is also part of this SoC. To be accurate, there are CPU cores. the RPi has four CPU cores, that means four different separate portions of hardware that can do their own fetch execute cycle, with their own sets of interrupts, stack, registers, etc. 
 
@@ -31,13 +33,13 @@ When you start your RPi, the first thing that is powered and runs is not actuall
 
 Now, remember that in previous chapter I suggested that you first flash some official RPi OS using the official imager, and then simply overwrite your kernel and config files to it. So you don't have to setup most of the bootcode and firmware stuff. The only thing relevant is the `config.txt` file. 
 
-# Memory Mapped IO
+## Memory Mapped IO
 
 Now, only the CPU can actually execute instructions. It is the one who does everything once it starts. How does it configure and handle the other components in the SoC? Like the Timer controllers and UART controllers and such? The RPi follows something called "Memory Mapped IO". So instead of having separate wires and connections going from the CPU to other components, the other components have some assigned "Memory Addresses". The components write their current state to these memory addresses, the CPU can read them just like reading any other memory address, and then write data back which is read by the components. So each component has it's own dedicated parts of main memory which only serves as communication between the components and the CPU. 
 
 Do note, of course we have multiple CPUs, multiple CPUs trying to talk to the same component can sometimes cause complications, but we're not going to focus on multi-core system right now. Currently we will only work with one core working. 
 
-# UART in RPi
+## UART in RPi
 
 The SoC in the RPi has two UART components. Labeled `UART0` and `UART1`. `UART0` is of type "PL011" (PL011 doesn't mean anything here, it's just a way to identify the type of UART). UART1 is a Mini UART, not PL011. For basics, you just need to know PL011 UARTs are more thorough UARTs with their own clocks, more configuration options, bigger transmittion limits, etc. Mini UART is very barebones. Tied to the GPU clock, lesser transmittion size, less featured, etc. 
 
@@ -53,19 +55,19 @@ Now, when the RPi boots, and the GPU is setting up the system for the CPU, when 
 
 [![UART Diagram](https://www.electronicwings.com/storage/PlatformSection/TopicContent/305/description/Raspberry%20pi%203%20UART%20pins.png)](
 https://www.electronicwings.com/raspberry-pi/raspberry-pi-uart-communication-using-python-and-c)
-##### (click image to go to source)
+<small> (click image to go to source) </small>
 
 Now, your CPU can simply communicate to `UART1` what string it wishes to send to the host, by writing to the correct addresses for `UART1`. `UART1` will correctly convert it to digital signals and send it to the correct pins. So the setup is technically complete on RPi side. 
 
 Something to note is that enabling UART also causes `UART0` to be mapped to the bluetooth module of the RPi. We're not going to discuss this for now.
 
-# UART on host machine
+## UART on host machine
 
 It's actually pretty easy to setup on the host machine. You just need to install a tool which will manage UART for you. In this project I use minicom. It's as simple as using an installation command. It differs based on your OS. You can refer to the your host system's package distributor to get it. For me on Arch Linux it was: 
 
 ```sudo pacman -S minicom```
 
-# Connection
+## Connection
 
 Your TTL to USB cable will have four TTL. Connect the Green cable to rx (pin number 10, GPIO15), the White cable to tx (pin number 8, GPIO14), and the black cable to GND (pin number 6). Note that you also have a red cable. It carries a high 3.3V or 5V voltage depending on your host's configuration. Either way you are NOT SUPPOSED TO CONNECT IT TO ANYTHING ON YOUR RASPBERRY PI. It will destroy your RPi, you do not need it for the UART to work. Just connect the three wires and USB to your host system.
 
@@ -82,7 +84,7 @@ Note the number in the end. That is the `BAUD RATE` of our UART communication. I
 
 That's all!!! Now anything your RPi outputs can be seen in your minicom window! you can close minicom whenever you're done by: `Ctrl+A`, and then press `X` on keyboard.
 
-# Implementation
+## Implementation
 
 Finally, we can get to actually implementing the print function in our operating system!
 
@@ -135,7 +137,7 @@ uart.write_byte(b'A');
 
 According to the documentation bit 5 in `AUX_MU_LSR_REG` is set to 1 when UART1 is able to accept a byte meant to be sent to TX. So in `write_byte()` we simply wait till the value of said register is of the form `X1XXXXX` and not `X0XXXXX`. And when it is the former, we know we can send a byte, which we do by writing to `AUX_MU_IO_RED` address. From their UART1 will send the bytes to the tx pin and thus to the host system, where you will be able to see it in your minicom window.
 
-# Traits in Rust
+## Traits in Rust
 
 Note that other than just implementing the basic function write_byte, we also implemented something called "`Write`" for "`Uart`". "`Write`" is actually something what's called a "Trait" in Rust. Essentially, you must be familiar with object oriented programming. The child of a certain class inherits all the functions and features of the parent class. In a way, you end up with a system where you can create functions which only take objects which inherit from some parent class. Or you could create a child class which inherits from a parent class, so the child class has all the convenient methods and features of the parent class.
 
@@ -145,7 +147,7 @@ In order to implement some trait in your Rust class/struct, you need to define s
 
 The advantage of implementing the `Write` trait to our `Uart` is suddenly you inlock the `Uart.write_fmt` method. This is useful in string formatting. Because the `write_fmt` method automatically handles string formatting.
 
-# `println!`
+## `println!`
 
 Technically you can already print things. E.g.
 
@@ -213,7 +215,7 @@ Now just ensure all this is in some file which is actually compiled by the Rust 
 Welcome to, AtOS.
 ```
 
-# Final codes
+## Final codes
 `./kernel/peripherals.rs`
 ```rust
 use core::{fmt::Write, ptr::{read_volatile, write_volatile}};
@@ -295,4 +297,4 @@ fn panic(_info: &PanicInfo) -> ! {
 }
 ```
 
-The next repository state snapshot link will be provided after exceptions are implemented.
+The next repository state snapshot link will be provided at the end of chapter 5.

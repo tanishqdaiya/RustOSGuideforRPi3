@@ -1,0 +1,466 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Baremetal Rust - Rust OS Guide for Rasperry Pi 3</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-0392ca55.css">
+        <link rel="stylesheet" href="css/chrome-fc474251.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-0ce8d503.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-3ad36685.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust OS Guide for Rasperry Pi 3</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="baremetal-rust"><a class="header" href="#baremetal-rust">Baremetal Rust</a></h1>
+<p>Now that you know exactly how code is actually run and what it looks like after compilation, we have to actually make it run. We are trying to write an Operating System in rust. So of course we need to figure out how to make program written in rust run directly on our RPi without any underlying operating systems.</p>
+<h1 id="project-init"><a class="header" href="#project-init">Project init</a></h1>
+<p><small> NOTE: This section is for Linux (where you’ll write your rust code and compile it for the Pi). If you’re using a different OS some things may or may not be different. Feel free to take help from LLMs or other online resources for setting up your baremetal rust project with aarch64-unknown-none as your target.
+</small></p>
+<p>Let’s first initialize our bare bones project.
+But before we do that we need to run:</p>
+<pre><code class="language-bash">rustup target add aarch64-unknown-none
+</code></pre>
+<p>This will install and add whatever Rust compiler needs to be able to compile code to instructions that can run on “AArch64” architecture (basically RPi3’s CPU architecture). The “unknown” and “none” refer to the “vendor” and “underlying operating system” of your target respectively.</p>
+<p>Now you can initialize your project with <code>cargo</code>. (comes with rust)</p>
+<pre><code class="language-bash">cargo new atos --bin
+cd atos
+</code></pre>
+<p>Now in your project folder there must be a file named “Cargo.toml”. You can add some basic information about your project there. For me it was:</p>
+<pre><code class="language-toml">[package]
+name = "at-os"
+version = "0.1.0"
+authors = ["ZackyGameDev &lt;zaacky2456@gmail.com&gt;"]
+</code></pre>
+<p>Next, we have to tell our project what our rust code is meant to be compiled for. Create a file <code>.cargo/config.toml</code> which will have information about our compiling settings. and put the following in it:</p>
+<pre><code class="language-toml">[build]
+target = "aarch64-unknown-none"
+</code></pre>
+<p>Optionally, if you’re using vscode then tell the linter/syntax checker what you’re targetting by putting the following in <code>.vscode/settings.json</code>:</p>
+<pre><code class="language-json">{
+    "rust-analyzer.check.allTargets": false,
+    "rust-analyzer.cargo.target": "aarch64-unknown-none"
+}
+</code></pre>
+<p>Now there’s still some more we have to setup before we can actually build it, but before that we have to understand some more things and write a little bit of code.</p>
+<h1 id="lack-of-underlying-os"><a class="header" href="#lack-of-underlying-os">Lack of Underlying OS</a></h1>
+<p>In rust, and in pretty much any programming language actually, there are many features that rely on Operating Systems beneath them, for them to work. For example in C, when you want to open a file, the instructions from your compiled C code itself don’t really read the disk directly trying to decipher the data on the disk to find your file and start writing to it. Instead, your code will ask the Operating System beneath to do it for you, and just give you something like a pointer to the file. This is usually so programs written don’t need to access the memory directly (becaues if they’re evil or terrible they might try to mess up with parts of memory you wouldn’t want them to mess up).</p>
+<p>If you’ve read up on this, you’d know this way of asking the operating system for something is called “System Calls”. Where essentially the programming language (in user space) is relying on the kernel (in kernel space) to provide low level interactions through system calls.
+(read about it at <a href="https://pages.cs.wisc.edu/~remzi/OSTEP/cpu-mechanisms.pdf">OSTEP: Ch6</a>)</p>
+<p>Well what about when you’re running your code directly on the computer without any operating system beneath? What if there’s no “kernel” to do system calls to? It’s simple. Those features become unusable and pretty much useless. And in rust, “those features” includes the entire Rust Standard Library called <code>std</code>.</p>
+<h1 id="lack-of-crt0"><a class="header" href="#lack-of-crt0">Lack of <code>crt0</code></a></h1>
+<p>Rust code, normally on windows or linux just running normally on the same machine, doesn’t run directly. What happens under the hood is that first, something called the “C Runtime Library” is run. What it does is basically setup the environment and parameters of the hardware, in preparation for Rust code to run. It first does something called “setting up the stack” and “initializing .data” or “zeroing the .bss” (we’ll learn what it is later). And then it literally calls the function named “main” in your rust code. (Which is why the first lines of code to run are written in a function called “main()”, because that’s the name <code>crt0</code> calls).</p>
+<p>As you may have guessed, when making our rust on baremetal, there is no such thing. The labour of “setting up stack” or preparing environment for rust is also going to be need to be done by you manually, before your rust code even starts. But wait… if we have to write some code that does some stuff before Rust code can run… that means that preparation code can’t be written in Rust… The truth is unavoidably, we’ll have to write this preparatory code in assembly. Because it’s pretty much the only language that can run immediately without any preparation (because you’re literally writing the structure of the machine code directly). Although you can try to minimize it as much as possible, in this entire project you’ll have to unavoidably write some bits in assembly</p>
+<h1 id="assembly-entry-point-and-preparing-for-rust-main"><a class="header" href="#assembly-entry-point-and-preparing-for-rust-main">Assembly entry point and preparing for Rust main</a></h1>
+<p>Time to finally write those first ever lines of code that will run at <code>0x80000</code> (I hope you know the relevance of this address by now).</p>
+<p>You can put your file anywhere, for me I put it at root of the project, <code>./entry.S</code>. This is what it looks like:</p>
+<pre><code class="language-asm">.section ".text.boot"
+.global _start
+
+_start:
+    // set stack pointer
+    ldr   x0, =_stack_top
+    mov   sp, x0
+
+    // jump to rust
+    bl   main
+
+1:
+    wfe
+    b 1b
+</code></pre>
+<p>If you’ve never used assembly before, this might look scary, but it’s pretty simple. Let’s understand this line by line. The first line defines the section this code will go to (discussed under linking further below). Then <code>.global _start</code> just means “this symbol called <code>_start</code> should be accessible globally, to all files and codes”. This is just for the linking discussed further below.</p>
+<p>Next, the first lines of code (labeled under <code>_start</code>). All we’re doing is loading up an address <code>_stack_top</code> in the <code>x0</code> register of the chip, and then copying that value to the <code>sp</code> register from <code>x0</code> register. We load it into <code>x0</code> first because there’s no instruction to copy an address directly to <code>sp</code> register.</p>
+<p>(If this seems alien, refer to chapter 0 about registers and stack)</p>
+<p><code>ldr</code>, <code>mov</code> and <code>bl</code> are all instructions. There’s probably uncountable instructions on the ARM chip. But you can google for them as you need them. Writing assembly literally just involves listing all the instructions that need to be run line by line. Sometimes those instructions might need some more specification like “which register is this instruction going to copy value to?” or “what value is this instruction dealing with?”. Those are written after the instruction name, separated by commas. every line of instruction is just “INSTRUCTION ARG0, ARG1”.</p>
+<p>And then finally we do <code>bl main</code> which literally just means “call the code under the label <code>main</code>”. Where is main you ask? Well.. that’s the main function in our rust code of course! So what this is essentially doing is calling the rust main function after setting the <code>sp</code> register to some value.</p>
+<p>You might’ve noticed we just pulled this variable called <code>_stack_top</code> and just assumed it has the correct address to set the stack to. But where was this defined? Where did it come from? Well again, it is defined in the linking process. Assembly doesn’t really have variables. It’s not like there’s some variable defined on the stack or heap which the assembly accesses like other programming langauges. If it worked like that we would’ve written the instructions to access data from the heap and use it. This is actually something called a “symbol”. kind of like inline macros from C. The linker while producing the final output file will see this symbol, and try to find where that symbol is defined. And then everywhere in code it will replace the symbol with its correct defined value.</p>
+<p>In any case, as it turns out setting <code>sp</code> register to the correct value happens to be pretty much all you need to do to call your <code>main</code> funciton in rust and expect it to work correctly. So that’s what we do. The way the <code>bl</code> instruction works is that once the rust <code>main</code> function finishes executing, it’s going to come back to this assembly code and resume executing the instructions written after the <code>bl</code> instruction. But Operating Systems don’t really finish executing. They continuously in an infinite loop manage the hardware, respond to user, and facilitate services for softwares running on it. So that’s what the last few lines are for. It’s pretty much just an infinite loop which tells it to wait for a bit <code>wfe</code>, and then jump back to label “1”. Hopefully these instructions will never be executed because our rust main function will never return. But it is still there as a fail safe.</p>
+<h1 id="rust-mainrs"><a class="header" href="#rust-mainrs">Rust main.rs</a></h1>
+<p>Finally, we can write some Rust code.</p>
+<p>There must be a file <code>src/main.rs</code> in your project created automatically. It houses our main function.</p>
+<p>Earlier we discussed that the standard library will not function in our project. Therefore we disable it by writing <code>#![no_std]</code> at the top of <code>main.rs</code>.</p>
+<p>Also, since we do not have <code>crt0</code>, we also have to tell rust to NOT generate anything for it, and not expect the C Runtime Library to be there to run the main function automatically. For this you put <code>#![no_main]</code> at the top of your file.</p>
+<p>Next our actual main function!</p>
+<pre class="playground"><code class="language-rust">#[no_mangle]
+pub extern "C" fn main() -&gt; ! {
+    loop {}
+}</code></pre>
+<p>We use <code>extern "C"</code> to let it know that this function must follow C-style convention for being called. The C-style convention basically decides how can code written in assembly call this function by trying to jump to it as a label with instructions like <code>bl</code>. It is important because this is how our <code>bl main</code> line in <code>entry.S</code> will actually work.</p>
+<p>Also, when the compiler compiles our code, it may obfuscate or change our function’s name to some random garble to make it unique and save space. But we don’t want that. We want the function name to stay the same after compilation, so our <code>entry.S</code> and other files can recognize it with the symbol <code>main</code>. For that we put <code>#[no_mangle]</code> before the definition.</p>
+<p>as for the return type, <code>!</code> just means that this function should NEVER return. That means it will never ever finish executing (through an infinite loop).</p>
+<h1 id="panic-handling"><a class="header" href="#panic-handling">Panic handling</a></h1>
+<p>Now, if you try to do something illegal in rust, which raises an exception. Or in Rust lingo, causes your program to panic, Rust usually prints out a very helpful message to <code>stdout</code> to tell you where your code messed up. It also shows a very generous option to see a backtrace to exactly which function called which function to lead to the line at which the error happened. Sadly, all this functionality is defined in <code>std</code>. Which we have excluded. So now we are left to implement that panic handling ourselves.</p>
+<p>It is actually very simple. You just need to write a function that accepts a <code>core::panic::PanicInfo</code> object, and just mark it as the “panic handler”. Like so:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use core::panic::PanicInfo;
+#[panic_handler]
+fn panic(_: &amp;PanicInfo) -&gt; ! {
+    loop {}
+}
+<span class="boring">}</span></code></pre>
+<p>Whenever a panic occurs, this function will be called. And you can access panic information from the one argument. We can implement panic handling later. For now we’re just trying to appease Rust compiler. So all our handler does right now is enter an infinite loop upon panic.</p>
+<p>Now Rust will no longer complain about no panic handler being implemented.</p>
+<p>Another thing is that when a panic happens, rust uses something called “unwinding”. Which basically frees up memory in the event a panic happens. And gracefully exits out to the parent who called the panic inducing function/thread. However, unwinding uses some OS specific libraries which we obviously do not have. Therefore, we are going to disable this feature as well to avoid unpredictable behaviour.</p>
+<p>For this just append the following <code>.cargo/config.toml</code>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+<span class="boring">}</span></code></pre>
+<p>This is going to change the behaviour on panic, from unwind to abort. So Rust will not try to do any additional behaviour upon panic, it will simply call our panic handler and pass it a <code>PanicInfo</code> object. No unwinding will be attempted.</p>
+<p>Now this wraps up our Rust code.</p>
+<h5 id="final-version-of-all-code-files-are-available-at-the-end-of-this-chapter"><a class="header" href="#final-version-of-all-code-files-are-available-at-the-end-of-this-chapter">Final version of all code files are available at the end of this chapter.</a></h5>
+<h2 id="linking"><a class="header" href="#linking">Linking</a></h2>
+<p>Finally the part where we start putting together all our project to compile, build and produce a single file to give to the RPi.</p>
+<p>In chapter 0 I mentioned that you will be able to tell RPi, which memory addresses to put what code or what data in when booting it. The way it works is the following: When you compile your code (by using the build commands we will talk about in a bit), all the files in your code are first compiled, i.e. translated to machine code. Then something called the “Linker” combines all those machine codes into a single file. Which we give to our raspberry pi; to copy to the memory after booting. Now RPi will always just copy the entire file exactly one to one to it’s memory. so data from addres 0x00000 in the file will be copied to the address 0x80000 in the memory and so on. So to decide what data goes to which memory, you have to put it at the correct place in the compiled file itself.</p>
+<p>Since it is the Linker who combines all the code into a single file, it also provides us the option to let it know which code can be expected to go to which addresses when the final compiled file will run. This is done through something called a “Linker script”. To be exact, we’re going to give a “label” to our code which we want to run immediately after RPi boots. And tell the linker to put all the code with that label at the address “0x80000”. (Because as discussed last chapter, that is the hard fixed address that RPi starts executing instructions from after booting).</p>
+<p>To be exact, when we say we tell the linker to put all the code at address 0x80000, it doesn’t mean that the data will start at that address <em>inside</em> the file. No in fact, it means that when this code is running, it can be expected to reside in the address 0x80000 in memory. So all the instruction bytes in our final file will expect other data to be found in the addresses specified by linker.</p>
+<p>The linker, and in general our <code>cargo build</code> command will actually produce something called an “ELF” file (stands for executable and linkable format). It is basically the format of <code>.exe</code> files followed by Unix systems (including linux). You can read about them more, but mainly what you need to know is that ELF files are meant to be run, so they have an entry point, and some additional information about them in the first couple bytes called “header”. But what our RPi expects is literally just a snapshot or “image” of what the RAM should look like. That file is called “kernel8.img” (this filename is fixed, RPi will look for this exact file name). RPi just loads this file as is to memory.</p>
+<p>So we will first use cargo with our linker script to produce an ELF file, and then convert it to a <code>kernel8.img</code> file for RPi. and that img file is what goes to the memory card.</p>
+<p>We’re going to define the linker script in the root of the directory. Though you can put it anywhere.</p>
+<p><code>linker.ld</code></p>
+<pre><code class="language-ld">ENTRY(_start)
+
+SECTIONS
+{
+    . = 0x80000;
+
+    .text :
+    {
+        *(.text.boot)
+        *(.text*)
+    }
+
+    .rodata : { *(.rodata*) }
+    .data   : { *(.data*) }
+    .bss    : { *(.bss*) }
+
+    . = ALIGN(16);
+    _stack_top = . + 0x4000;
+}
+</code></pre>
+<p>Okay now we have to understand this.</p>
+<p>The first thing you need to tell the linker is the entry point of your file. If you remember we made our label <code>_start</code> global in <code>entry.S</code>. The entry point defined here is irrelevant to Raspberry Pi, it will just run instructions from 0x80000. But you need to define it anyway for the intermediate ELF file to be generated.</p>
+<p>Next, we define our sections, where we actually tell it what to put where in memory.</p>
+<p><code>.</code> is a pointer, Kind if like how you have a cursor in text editing programs. When you type text, it moves ahead. And you first place your cursor to the location you want to start typing from. The same way we first do, <code>. = 0x80000</code>. Which means placing the cusor at <code>0x80000</code> location to start writing from there. This address is the place execution starts from in RPi.</p>
+<p>Then first section is <code>.text</code> which stands for “code”. It’s a very strange naming choice, but yes, sections of bytes meant to be executed as instructions are typically called as “text” in low level memory.</p>
+<p>For <code>.text</code>, we can define what the section should actually look like. Since we want the subsection we wrote <code>.text.boot</code> to be at <code>0x80000</code>, it should come first. Hence, we put <code>.text.boot</code> first and then <code>.text*</code> which means all remaining other instructions. After that the rest of the sections. <code>.rodata</code> is read only data. Values of constants defined in code, or read only strings, or string literals. Then <code>.data</code> is for variables which are initialized in the code. They are writable and mutable. Finally <code>.bss</code> is data initialized to be zero in the code, also writable.</p>
+<p>You may have noticed we did not define sections <code>.text</code>, <code>.data</code>, <code>.rodata</code> and <code>.bss</code> ourselves. They’re actually default conventional names that the compiler generates. We’re just telling the linker where to put them. The only thing we defined ourselves was the subsection for <code>.text</code> called <code>.text.boot</code>.</p>
+<p>Now, remember, the <code>.</code> is a pointer, like a cursor. So now that we’ve put a bunch of sections, it must’ve moved to hold an address at the end of the last section we put. We now do <code>. = ALIGN(16);</code>. What it does is that– if the address that the pointer is currently at, is not divisible by 16, it will increment it till it is divisible by 16. And then we finally define the symbol <code>_stack_top</code> to be the final position of the pointer (aligned to 16 divisibility), plus, <code>0x4000</code>. That means when we set <code>sp</code> to <code>_stack_top</code> in <code>entry.S</code>, it is going to have <code>0x4000</code> size of address space avaiable to it from <code>_stack_top - 0x4000</code> -&gt; <code>_stack_top</code>.</p>
+<p>If this seems alien or strange, please lookup what a “stack” is in memory.</p>
+<p>Note: We align to 16 because in AArch64 standard, stack pointer is always expected to be 16 aligned whenever a function is called. That is, every stack entry address should be a multiple of 16.</p>
+<p>Finally, we have completed all the code we had to write. We can now build it</p>
+<h1 id="building"><a class="header" href="#building">Building</a></h1>
+<p>It is recommended to first use a tool like “Raspberry pi imager” to first flash any OS in the memory card. It sets up the memory card’s partitions and file systems so we just have to copy paste our image.</p>
+<p>Now, you have to tell your rust script that it needs to follow our <code>linker.ld</code> script. Otherwise it will ignore it. Do so by adding the following to <code>.cargo/config.toml</code></p>
+<pre><code class="language-toml">[target.aarch64-unknown-none]
+linker = "aarch64-linux-gnu-ld"
+rustflags = [
+  "-C", "link-arg=-Tlinker.ld",
+]
+</code></pre>
+<p>Next, we need to setup something that will compile our assembly files. For that create a file named “<code>build.rs</code>” in root directory. By convention cargo runs this file first if it sees it. Before doing rest of the compilation. We’ll tell our <code>build.rs</code> to compile our assembly files:</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("cargo:rerun-if-changed=src/entry.S");
+
+    cc::Build::new()
+        .file("src/entry.S")
+        .flag("-c")
+        .compile("entry");
+}</code></pre>
+<p>As you can see, it needs a dependency called “CC” which stands for “cargo C”. It’s a dependency that helps compile C files or Assembly files for your project. Add the following to your <code>cargo.toml</code>.</p>
+<pre><code class="language-toml">[dependencies]
+
+[build-dependencies]
+cc = "1.0"
+</code></pre>
+<p>Finally, the moment of truth, use the following command to get the ELF file compiled:</p>
+<pre><code class="language-bash">cargo build --release
+</code></pre>
+<p>This will give you an output at <code>target/aarch64-unknown-none/release/&lt;your_binary_name&gt;</code>.</p>
+<p>Now to convert this ELF file to raw binary image for the RPi, we use:</p>
+<pre><code class="language-bash">aarch64-linux-gnu-objcopy \
+target/aarch64-unknown-none/release/&lt;your_binary_name&gt;\
+-O binary kernel8.img
+</code></pre>
+<p>Where &lt;your_binary_name&gt; depends on your create name by default.</p>
+<p>Now you have a <code>kernel8.img</code> that you can just copy to your RPi!</p>
+<p>Create one more additional file named <code>config.txt</code> and put this:</p>
+<pre><code>arm_64bit=1
+enable_uart=1
+</code></pre>
+<p>Finally, after you’ve used the <code>Raspberry Pi Imager</code> tool to flash any random OS to your memory card, you can just open the files in your memory card, open the bootfs partition and copy paste the files “config.txt” and “kernel8.img” from your project directory to this bootfs partition.</p>
+<p>Any time you make a change to your code, just do <code>cargo clean</code> before running the two commands again. And you just have to overwrite the old kernel8.img with the new one everytime. And just plug it to the Pi and power it up!</p>
+<h1 id="final-codes"><a class="header" href="#final-codes">Final codes</a></h1>
+<p><code>main.rs</code></p>
+<pre class="playground"><code class="language-rust">#![no_std]
+#![no_main]
+
+use core::panic::PanicInfo;
+
+#[no_mangle]
+pub extern "C" fn main() -&gt; ! {
+    loop {}
+}
+
+#[panic_handler]
+fn panic(_info: &amp;PanicInfo) -&gt; ! {
+    loop {}
+}</code></pre>
+<p><code>.cargo/config.toml</code></p>
+<pre><code class="language-toml">[build]
+target = "aarch64-unknown-none"
+
+[target.aarch64-unknown-none]
+linker = "aarch64-linux-gnu-ld"
+rustflags = [
+  "-C", "link-arg=-Tlinker.ld",
+]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+</code></pre>
+<p>The rest of the files you can find an identical version at
+https://github.com/ZackyGameDev/AtOS/tree/81fcfb3cbdbd0fb0add78b5c89ff8e5bad70d260
+(Do note, the naming may differ, also main.rs is different at this commit, please ignore it.)</p>
+<h2 id="other-readings"><a class="header" href="#other-readings">Other readings</a></h2>
+<p>https://os.phil-opp.com/freestanding-rust-binary/
+Excellent blog, though it is targetted for a different hardware, it is still an amazing read that covers a lot more.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+                            <a rel="next prefetch" href="serial-output.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+                    <a rel="next prefetch" href="serial-output.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

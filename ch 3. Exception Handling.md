@@ -1,5 +1,7 @@
 # Hardware Exceptions
 
+## Preface
+
 You may already be familiar with what an exception is in programming. It is when you write some code which does something it is not supposed to do and your computer screams at you. Stuff like dividing by zero, using a variable that was never defined, etc.
 
 However, even on hardware level there are some actions which inherently you are not supposed to do. For example if you tell the CPU to read from some memory address which doesnt even exist. Such hardware exceptions are dealt with differently than the exceptions in programming languages.
@@ -12,7 +14,7 @@ In simpler terms, you have to plan beforehand how you want an hardware exception
 
 Now, naturally you might want to handle different kinds of exceptions differently. So you have to do this process of writing handler code and telling your CPU where it is, for each kind of exception. Telling your CPU where the handler is, is as simple as simply writing the handler code starting address to a certain register of the CPU.
 
-# Exception Levels
+## Exception Levels
 
 You never execute user programs at the same degree of priviledge as the kernel itself. This is a basic in OS development. If you have a program written by a third party, it may be malicious, so you don't give it too much priviledge to interact with the hardware directly. However, what if some exception occurs in the user program? And what if handling that exception requires you to interact with the hardware directly? In this case when an exception occurs, we go to a higher level of hardware priviledge. 
 
@@ -27,33 +29,33 @@ The last two will not be relevant to our project. Mainly we will be working with
 
 Whenever a hardware exception occurs in EL0, either the exception is handled in EL0 itself, or if needed the level is raised and exception is sent to EL1 to be handled.
 
-# Relevant Registers
-## `ELR_EL1`
+## Relevant Registers
+### `ELR_EL1`
 The name stands for "Exception Link Register for EL1". We have learned that whenever an exception occurs, the CPU will change PC to the address of the appropriate exception handler instructions. However once the exception handling instructions conclude their job and handle the exception, the program execution may need to go back to the address where it was originally executing at right before the exception occured. How does the CPU know where to go back to? or where to Return to after an exception handling?
 
 The CPU stores the original PC to return to in the `ELR_EL1` register. However, this happens only if the exception is being handled in EL1. For instance, if an exception occured in EL1, and hardware decided to raise priviledge level to EL2 in order to handle it, now a different register called `ELR_EL2` will be used to store the return address into.
 
-## `SPSR_EL1`
+### `SPSR_EL1`
 Stands for "Saved Program Status Register for EL1". The CPU has many other registers other than PC which work as memory to hold important information about the current execution. We will discuss them more later, but it includes something called "flags", "Interrupt masks", "program status", etc. When the CPU jumps to exception handler, it also must save this important information in case the exception handler modifies any of it. That is what this register holds. This register holds the PSTATE (program state) information of the program that was being executed right before the jump to exception handler occured. It also holds information about whether if on return, the CPU must stay in same EL or drop lower to EL1.
 
 There are also `SPSR_EL2`, `SPSR_EL3`... for when the exeption is taken to other ELs. However right now we will only see exceptions being taken to EL1.
 
-## `CurrentEL`
+### `CurrentEL`
 Less of an actual piece of memory, but more of a user convenience. Whenever we wish to check what EL we are currently in, we can perform a read on the `CurrentEL` register. Which will return one of the following values: `0b0000` for EL0, `0b0100` for EL1, `0b1000` for EL2, and `0b1100` for EL3. You may have realized to get the CurrentEL as integer, you can simply do `(CurrentEL >> 2) & 0b11`
 
-## `ELR_EL2`
+### `ELR_EL2`
 Same as the EL1 counterpart. Holds the address to return to upon `ERET` instruction if currently in EL2.
 
-## `SPSR_EL2`
+### `SPSR_EL2`
 Same as the EL1 counterpart. When we ERET while in EL2, this register is checked to see which state must be 'restored' upon returning to the address in `ELR_EL2`
 
-## `SP_EL0`
+### `SP_EL0`
 This is the stack pointer register for EL0 mode. Higher ELs can also access it. User programs typically use this stack pointer. in EL0 mode, `sp` register directly references to this register.
 
-## `SP_EL1`
+### `SP_EL1`
 Same as earlier but for EL1 and higher modes. EL0 cannot access this. Mainly for the stack pointer of the kernel programs executions.
 
-## `VBAR_EL1`
+### `VBAR_EL1`
 Stands for Virtual Address Base Register for EL1. Earlier we mentioned that we need to tell the CPU through a register, which address to jump to when an exception occurs. This register holds the address.
 
 But wait.. Only one register? Aren't there many kinds of exceptions possible as earlier discussed? Is there a different register for every single exception type handler?
@@ -92,20 +94,20 @@ Now, you may have noticed that this means for each exception handler you only ge
 
 Additional note, the address in `VBAR_EL1` must be 2048 bytes aligned. that basically means that the address must be divisible by 2048.
 
-## `HCR_EL2`
+### `HCR_EL2`
 Stands for Hypervisor Configuration Register. EL2 is often called hypervisor mode. This register is suffixed with EL2 because it can only be modified in EL2 or higher priviledge mode. This register acts as a rulebook for EL1. What mode EL1 executes in (32 or 64 bit), whether EL1 exceptions should directly be taken to EL2 or not, interrupts setup, memory translation, etc are configured here. When the system boots the state of this register is random (UNKNOWN).
 
-## `ESR_EL1`
+### `ESR_EL1`
 Stands for Exception Syndrome Register for EL1. Holds more detailed information about the identity of the exception. Only works if exception was of SError type. Otherwise it is useless.
 
-## `FAR_EL1`
+### `FAR_EL1`
 Stands for Fault Address Register for EL1. If and only if the exception was of type SError, and it involved some sort of memory failure, this register will hold that exact virtual memory address that caused the crash. Whether or not the SError was related to memory can be confirmed through information held in `ESR_EL1`. This register is completely useless in other scenarios.
 
 
 Well, that wraps it up!!! That was a lot of information to memorize, it will take time to truly get to know all of these registers personally.
 
 
-# Booting to EL1
+## Booting to EL1
 
 When you start your OS. It actually starts in EL2 for the Raspberry Pi 3 CPU. Since we want our OS to work in EL1. We will need to switch to EL1 in boot process in `entry.s`. Sadly there is no actual direct way to just switch over to a different EL. But the correct way to do it is much more clever.
 
@@ -197,7 +199,7 @@ That means our EL is successfully EL1!
 
 We can now move to exception handling.
 
-# Setting up and loading exception table
+## Setting up and loading exception table
 
 Earlier we described what format we have to prepare our exception vector table in memory for the `VBAR_EL1` register.
 
@@ -256,7 +258,7 @@ b   el1032_serror
 
 The `b` instruction, called branch instruction, basically just jumps to a given address in memory. We have set up 16 branch instructions here, one for each combination of exception type and source. Notice how each branch instruction has a different label for the address to branch to. We can either Define 16 functions in rust with the name of these labels. However, when we jump to rust, rust actually may completely destroy whatever values were in the CPU registers, because it needs the CPU registers for its own rust related purposes. But the handler may need to have the original values in the registers preserved, to inspect during exception handling. So we will first save all the values of all the relevant registers into the memory. Then we will call the rust handler function, this time just giving it the address to all the relevant register values in memory. So it can still have original values somewhere it can see. 
 
-# Handling Exceptions in Rust
+## Handling Exceptions in Rust
 
 How do we pass values to rust? In asm, how do we call a rust function if the function actually takes in some arguments? in `entry.s` when we calk the rust main function, it doesn't expect any arguments so we could simply do a branch instruction to just jump to the address of the rust main function in memory like any other address label. However, when we wish to give arguments to a rust function, we can actually do so by passing the values in the x0, x1, ..., x7 registers. This gives you 8 arguments that you can pass to the rust function (since these registers are 8 byte sized, that's the max size of the arguments you can pass). For greater than 8 arguments, you can utilize the stack. All of this is defined according to the "[AArch64 Procedure Call Standard (AAPCS64)](https://github.com/ARM-software/abi-aa/releases)".
 
@@ -343,7 +345,7 @@ So in our original pipeline. In assembly, we will first move the stack pointer b
 Note that from here since the assembly will become very repetitive if we try to write the entire handler pipeline 16 different times for each exception table entry.
 So we will utilize something called "assembly macros". It is recommended to look it up before reading forward.
 
-## Assembly for handing exception handling to Rust
+### Assembly for handing exception handling to Rust
 
 To show you the general structure. For each of the 16 entries, we want to do the following:
 
@@ -547,7 +549,7 @@ And then simply modify linker script `linked.ld` to place the exception table in
     }
 ```
 
-## Completing the Rust function
+### Completing the Rust function
 
 Now that your assmebly is correctly saving exception context to memory and passing it to a rust functions you just need to work in rust from now!
 For now, we're not going to do anything crazy, lets just make the handler print all the exception context it is receiving, as a test.
@@ -587,7 +589,7 @@ pub extern "C" fn handle_exception_el1(ctx: &mut ExceptionContext) {
 }
 ```
 
-# Testing
+## Testing
 
 Of course, to test the exception handler, you need to first cause an exception.
 
@@ -671,7 +673,7 @@ Returned from exception!
 
 And that means that exception handling is successfully implemented.
 
-# Final codes
+## Final codes
 
 If the commands for building and running are getting out of hand, you can use makefiles!
 Here is the makefile that I use:
@@ -685,22 +687,22 @@ OBJCOPY = aarch64-linux-gnu-objcopy
 
 QEMU = qemu-system-aarch64
 
-# Default target
+## Default target
 all: kernel8.img
 
-# Build release
+## Build release
 build:
 	cargo build --release --target $(TARGET)
 
-# Convert ELF to raw binary
+## Convert ELF to raw binary
 kernel8.img: build
 	$(OBJCOPY) $(BUILD) -O binary kernel8.img
 
-# Run in QEMU (Emulating Raspberry Pi 3B+ with Mini UART redirected to terminal)
+## Run in QEMU (Emulating Raspberry Pi 3B+ with Mini UART redirected to terminal)
 run:
 	$(QEMU) -M raspi3b -kernel kernel8.img -serial null -serial stdio
 
-# Clean everything
+## Clean everything
 clean:
 	cargo clean
 	rm -f kernel8.img

@@ -1,0 +1,456 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Syscalls - Rust OS Guide for Rasperry Pi 3</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-0392ca55.css">
+        <link rel="stylesheet" href="css/chrome-fc474251.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-0ce8d503.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-3ad36685.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust OS Guide for Rasperry Pi 3</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="user-space-isolation"><a class="header" href="#user-space-isolation">User space isolation</a></h1>
+<p>So far what we’ve done is that we have created a separate project directory which acts as the place where all the user’s programs and standard library will be written. Basically all the stuff that is supposed to run ON our operating system. However why did we create a separate project for it? Why couldn’t we just keep growing our original operating system repository? Well, there’s mainly two reasons.</p>
+<p>the first reason is that user program is not just supposed to be the operating system related processes that run for the user like the shell, window manager, desktop environment, etc. The user programs can also be third party codes or applications that are written by people who are not associated with us or our operating system’s development. Those third parties should have a way to write applications that can run on our operating system without having to know how the OS itself handles the hardware. So this produces sort of a design philosophy based reason to separate the user program space including the user standard library, from the kernel project itself.</p>
+<p>When a third party includes or imports our standard library that we wrote, they will also work in a project environment completely disconnected from our OS kernel source code. And so we make the entire standard library as a standard rust library package project.</p>
+<p>The second reason is because of security. We know that by letting third parties create their own programs for our operating system, we allow them to freely introduce new amazing features or programs that do cool things on our operating system. However there can be malicious third parties which for whatever reason, simply wish to cause chaose on the hardware which is running our operating system. They might try to directly access RAM to violate the memory space used by other running programs. They might try to access the disk/microSD in order to corrupt files. They might try to access the MMIO addresses in order to control the rest of the hardware maliciously.</p>
+<p>This is the entire reason we drop to EL0 before letting a user program execute. This is because from kernel which runs in EL1, we can manually tell the hardware to block/moderate EL0’s direct access to the hardware. Completely blocking the program running in EL0 from even being able to see any other process’s memory in RAM, or from even being able to access the MMIO or disk.</p>
+<p>Thus, user programs should never expect to be able to access the hardware directly like the kernel can. So we also separate our rust project for our user standard library to a different cargo project. If user programs were compiled within <code>kernel8.img</code> then it would be more complicated to separate them and isolate them for running them in EL0.</p>
+<h1 id="syscalls"><a class="header" href="#syscalls">Syscalls</a></h1>
+<p>However, if the user programs cannot even expect any access to the hardware, how would they even interact with the machine and do whatever they are designed to do? How could they print output to the user without access to a display/UART? How could they read input from the user without reading data from the keyboard/io/UART_RX?</p>
+<p>To understand lets first define these tasks which require direct sensitive accessing of the hardware as “priviledged jobs” and let the accessing type itself be called “priviledged action”.</p>
+<p>Now, to put it plainly, most operating system standards actually expect the user program to send a request to the kernel for the priviledged job. From there, the kernel identifies what sort of priviledged job the user program wishes to perform. And then the <em>kernel performs</em> the priviledged task for the user in a safe controlled manner. The user program then receives the result of the privlidged action from the kernel. Usually in the form of return value in a register or at a place in memory that is accessible to the particular user program.</p>
+<p>This “request” to the kernel from the user program is called a “syscall”. In the following text you will learn how to make your user program send these “syscalls” to the kernel and how the kernel can indentify them, handle them, and then send responses back to the user program.</p>
+<h1 id="trapping-to-the-kernel"><a class="header" href="#trapping-to-the-kernel">Trapping to the kernel</a></h1>
+<p>In standard lingo you will often hear the word “trap”. Usually when textbooks or lectures talk about the user program sending a request to the kernel, They call it as the user program “trapping into the kernel”. What they mean by that is that like how we drop from EL1 to EL0 using the <code>ERET</code> method, we can also raise the level from EL0 to EL1. And just like how when dropping to EL0 we start off in the user program, i.e. the moment you drop to EL0 we simultanously switch to the user program’s instructions in memorry. We also start in the kernel when we raise the exception level to EL1. This is usually achieved by a dedicated instruction that the EL0 program can execute which causes this to happen. This entire process of using the special instruction in a low priviledge level to manually send the priviledge to a higher level while handing over the control to the kernel is generally called as “trapping into the kernel”.</p>
+<p>In ARM architecture, the special instruction that lets us send execution to kernel in EL1 is <code>svc</code>. We will learn about this instruction more. But it is short for “Supervisor Control”. The word “supervisor” is an old classic name of the “kernel”. It accepts one immediate argument, so the full way of writing it wuld be somethign like <code>svc #imm</code> where <code>imm</code> can be any number from 0 to 65535 (<code>0xFFFF</code>)</p>
+<p>When <code>svc</code> instruction is executed, the behavior that is triggered in the hardware can be described as following:</p>
+<ul>
+<li>A hardware exception occurs.</li>
+<li>The exception is taken to EL1.</li>
+<li>The immediate argument to the <code>svc</code> instruction is encoded in the <code>ESR_EL1</code> register.</li>
+<li>The type of exception is “Synchronous exception”. So the execution jumps to the appropriate entry in <code>VBAR_EL1</code> exception table, for <code>EL0 64 bit</code> source (since currently our user program executes in <code>EL0 64 bit</code> mode).</li>
+</ul>
+<p>Thus the kernel’s exception handler executes upon the <code>svc</code> instruction. The <code>svc</code> instruction does not touch any GPR values. So the user program has the option to store relevant information in the general purpose registers before using <code>svc</code>. Wherein the kernel’s exception handler can identify the values written in the registers. This is how the communication from the user program to kernel occurs for the syscalls.</p>
+<p>In linux kernel, different priviledged actions like “write to disk” or “read from disk” or “create new process” are all given a unique identification number. Then before <code>svc</code> the user program stores the ID of the requested priviledged action in the <code>x8</code> register, which the kernel reads and indentifies. Once the kernel is done performing the operation requested it then does ERET from the exception back to where EL0 did <code>svc</code>. Any relevant return values are also stored in GPRs.</p>
+<h1 id="implementing-syscalls"><a class="header" href="#implementing-syscalls">Implementing syscalls</a></h1>
+<p>We are going to do a similar procedure. For the first syscall we will try to implement a <code>println!</code> macro for the user space which works using syscalls instead of accessing the MMIO directly.</p>
+<p>So recall from the last chapter that for the sake of testing we just copy pasted the entire UART module from the kernel’s code into the user project. As discussed earlier the user programs should never expect to be given access to the MMIO addresses freely. So currently the way the user program does <code>println!</code> is incorrect. Even though it functions, the moment we introduce EL0 restrictions to prevent user programs from accessing MMIO, it will break and not work anymore.</p>
+<p>Thus this print function will be turned into a syscall. We’re going to remove the UART/peripheral code we copy pasted from kernel, and write brand new way of printing to the output. And this new way will actually just do <code>svc</code> whenever we want to print something, and then the kernel will do the printing for us, and return. It is going to be a <strong>syscall</strong>.</p>
+<p>So this involves two aspects, firstly in the user project, we write the print function that will actually do <code>svc</code> under the hood.</p>
+<p>First of all in the user project create a new directory <code>"src/stdlib"</code>. This directory will have all the standard library source code that our user programs will be able to use. Then create files <code>stdlib/mod.rs</code> and <code>stdlib/syscalls.rs</code>.</p>
+<p>Now in <code>mod.rs</code> write:</p>
+<pre><code class="language-rs">pub mod syscalls;
+</code></pre>
+<p>so now the folder “syscalls” will be treated as a rust module with <code>syscalls.rs</code> as a part of it.</p>
+<p>Before we start implementing the syscall in <code>syscall.rs</code> lets first cleanup <code>lib.rs</code>. First clean everything off. and only leave:</p>
+<pre><code class="language-rs">#![no_std]
+
+pub mod stdlib;
+</code></pre>
+<p>Now finally in <code>syscalls.rs</code> we can write the print functionality.</p>
+<pre><code class="language-rs">pub fn _print(s: &amp;str) -&gt; core::fmt::Result {
+    unsafe {
+        core::arch::asm!(
+            "svc #1",
+            in("x0") s.as_ptr(),
+            in("x1") s.len(),
+        );
+    }
+    Ok(())
+}
+</code></pre>
+<p>Here as you can see, the function here basically just takes a string. Then it puts the location and size of the string in <code>x0</code> and <code>x1</code> registers, and executes the instruction <code>svc #1</code>.</p>
+<p>Why <code>#1</code>? And why use <code>x0</code> and <code>x1</code> registers? Well the answer is that it is entirely up to you! In linux, the instruction is always <code>svc #0</code> and the ID of the syscall is passed in the <code>x8</code> register. However you can also pass the ID as the immedaite argument of the <code>svc</code> instruction. It is entirely your choice to decide what way is better. While passing the ID as immediate value is more secure according to some sources, it is also slightly inefficient to read it for the kernel. Either way it is your operating system, so you get to decide how it works.</p>
+<p>For my OS I chose that the print functionality will have syscall ID number 1. And of course the kernel needs to be able do know what the user program wants printed, and that we pass to the kernel in the <code>x0</code> and <code>x1</code> registers.</p>
+<p>Now, functionality wise this is quiet functional. However this does not accept any formatted strings. Now that you have it working, you can work on making it cleaner. Of course your operating system’s code organization and structure is also entirely up to you. But I chose to create a <code>Stdout</code> struct as an abstraction for the standard output pipeline, and implemented the syscall into that struct. This is similar to the <code>Uart</code> struct we create inside the <code>kernel::peripherals</code>. However the user program shouldn’t assume the hardware, it shouldn’t try to assume or expect that the output will happen to the UART. All the user program should know is that it can do output by prompting the kernel in EL1. That’s why we don’t name our struct “Uart” but instead “Stdout”. It is to reflect the generalized view of the user program. Since user programs should not have to worry about the hardware being used and be able to conveniently work with the standard library through generic crossplatform terms like stdout.</p>
+<p>My implementation ends up being as follows:</p>
+<pre><code class="language-rs">use core::{fmt, fmt::Write};
+
+/* ~~~ STDIO ~~~ */
+// For printing or getting input from the stdio (UART).
+// printing is assigned syscall number 1 (svc #1),
+// and getting input is assigned syscall number 2 (svc #2)
+// \TODO INPUT HANDLING
+pub struct Stdout;
+
+impl fmt::Write for Stdout {
+    fn write_str(&amp;mut self, s: &amp;str) -&gt; fmt::Result {
+        unsafe {
+            core::arch::asm!(
+                "svc #1",
+                in("x0") s.as_ptr(),
+                in("x1") s.len(),
+            );
+        }
+
+        Ok(())
+    }
+}
+
+
+pub fn _print(args: fmt::Arguments) -&gt; fmt::Result {
+    Stdout.write_fmt(args)
+}
+</code></pre>
+<p>And then of course we create the actual <code>print!</code> and <code>println!</code> macros.</p>
+<pre><code class="language-rs">#[macro_export]
+macro_rules! print {
+    ($($arg:tt)*) =&gt; ({
+        $crate::stdlib::syscalls::_print(
+            core::format_args!($($arg)*)
+        )
+    });
+}
+
+#[macro_export]
+macro_rules! println {
+    ($($arg:tt)*) =&gt; ({
+        $crate::stdlib::syscalls::_print(
+            core::format_args!(
+                "{}\n",
+                core::format_args!($($arg)*)
+            )
+        )
+    });
+}
+</code></pre>
+<p>And that is done from the user side!</p>
+<p>Now when the user program do user::println! it is going to send the string to the kerenel through <code>svc</code>.</p>
+<p>Now as for the part where the kernel handles the syscall.</p>
+<p>As we’ve learned that the <code>svc</code> instruction summons to EL1 by causing an hardware exception to occur to EL1’s exception handler. If you recall that it causes a synchronous exception. So in our exception handler, to identify if an exception was caused by <code>svc</code> instruction we can simply check if it was a synchronous exception.</p>
+<p>So far our exception handler had no real use. All it was doing is printing the entire context of the exception whenever an exception occured. However now we’re going to actually put it to use. Instead of immediately printing the exception contex and calling it a day, we’re going to make it <code>match</code> the exception type, and if it is a synchronous exception, we’re going to handle it accordingly. Something like:</p>
+<pre><code class="language-rs">// called by `exceptions.s`
+#[unsafe(no_mangle)]
+pub extern "C" fn handle_exception_el1(ctx: &amp;mut ExceptionContext) {
+    
+    // handling the exception based on the type.
+    match ctx.etype {
+        ExceptionType::_SYNC =&gt; handle_sync_exception(ctx),
+        _ =&gt; unhandled_exception!(ctx),
+    }
+
+}
+</code></pre>
+<p>Here, we’re going to shortly define the <code>handle_sync_exception</code> function and the <code>unhandled_exception!</code> macro.</p>
+<p>First of all for the unhandled exception. Right now we’re only identifying for a synchronous type exception, however it is possible that some other type of exceptions might also occur. It is not as though we’ve studied the entire ARM architecture thoroughly. So any other exceptions that might occur we consider them “unhandled” or “unexpected”.</p>
+<p>When an unhandled exception occurs you can always just ignore it. But what you could also do is print the context so even if our code can’t identify it, the person using (the developer) the OS can use the context to determine what went wrong.</p>
+<p>So the code from previous chapters about printing the exception context can be put into a convenient function.</p>
+<pre><code class="language-rs">fn print_exception_context(ctx: &amp;ExceptionContext) -&gt; () {
+    let etype_str = match ctx.etype {
+        ExceptionType::_SYNC =&gt; "SYNC",
+    
+    (abbreviated...)
+    
+        println!("  x{:02} = {:#018x}", i, ctx.x[i]).unwrap();
+    }
+    println!("=========================").unwrap();
+}
+</code></pre>
+<p>And then the macro can be created:</p>
+<pre><code class="language-rs">macro_rules! unhandled_exception {
+    ($ctx:expr) =&gt; {{
+        println!("Unhandled exception detected!").unwrap();
+        print_exception_context($ctx);
+    }};
+}
+</code></pre>
+<p>That’s all for the <code>match</code> route where the exception is anything other than the ones we expect. For a SYNC exception, we don’t want to just ignore it, we have to identify if it came from a <code>svc</code>, and then identify the immediate argument used in that instruction (since it gives the syscall’s ID), and perform respective syscall’s priviledged action.</p>
+<p>Firstly, for identifying if it came from <code>svc</code> instruction:</p>
+<p>When a synchronous exception occurs, the exception syndrome register <code>ESR_EL1</code> encodes information that helps identify the exception type. There are many fields in this register. The main one you need to know about are the bits [31:26]. These six bits make up a field which is named “EC” for “Exception class”. According to the <a href="https://developer.arm.com/documentation/ddi0595/2020-12/AArch64-Registers/ESR-EL1--Exception-Syndrome-Register--EL1-?lang=en#fieldset_0-31_26">official ESR_EL1 documentation</a>, this field contains the value “<code>0x15</code>” when the synchronous exception occured due to an <code>svc</code> instruction.</p>
+<p>So now you know the exception occured due to a syscall. All we need to do in exception handler is to call the function which will deal take it from there and do the actual syscall identifying and performing– the syscall handler basically. For the syscall handler, we’re going to put it in a different file in <code>kernel::syscalls</code> at <code>src/kernel/syscalls.rs</code>.</p>
+<p>For now in <code>exceptions.rs</code> you can define the sync handler as:</p>
+<pre><code class="language-rs">fn handle_sync_exception(ctx: &amp;ExceptionContext) -&gt; () {
+    let exception_class = (ctx.esr &gt;&gt; 26) &amp; 0x3f;
+
+    match ctx.esource {
+        ExceptionSource::_EL064=&gt; {
+            match exception_class {
+                0x15 =&gt; { // it was an svc instruction
+                    syscalls::handle_syscall(ctx);
+                },
+                _ =&gt; unhandled_exception!(ctx),
+            }
+        },
+        _ =&gt; unhandled_exception!(ctx),
+    }
+}
+</code></pre>
+<p>As you can see, we basically read the bits [31:26] to identify if it is a <code>svc</code> caused instruction. If it is, we simply call <code>syscalls::handle_syscall</code> (Don’t worry we will define this in a bit). All other cases are treated as unhanlded.</p>
+<p>We also here check if the exception can from EL0 or not. Obviously no user program will ever be permitted to run in EL1. So it makes sense that all syscall requests will only come form EL0. We’ve not used <code>svc</code> in any other EL even once. So if we get a <code>svc</code> caused exception from some other source, it will definitely be really suspicious, and thus we treat it as unhanlded so the OS appropriately freaks out about it.</p>
+<p>Finanlly in <code>syscalls.rs</code>. We’re going to create the sync handler. Now, you can easily get <code>x0</code> and <code>x1</code> from the ExceptionnContext. But the syscall handler will need to read the syscall ID somehow. Which was passed as an immediate argument to the <code>svc</code> instruction.</p>
+<p>Again, according to the <a href="https://developer.arm.com/documentation/ddi0595/2020-12/AArch64-Registers/ESR-EL1--Exception-Syndrome-Register--EL1-?lang=en#fieldset_0-24_0_9-15_0">official ARM documentation</a>, the <code>ESR_EL1 register's</code> bits [24:0] make up a field which is named “ISS” for “Instruction Specific Syndrome”. And when the exception was caused due to a <code>svc</code>, the last 16 bits of this ISS field contain the immediate argument passed to the <code>svc</code> instruction. The other bits [24:16] are reserved to zero (basically they don’t mean anything and have no use, and reading them will just give you zeroes).</p>
+<p>Thus, to get the syscall ID you can read <code>ESR_EL1[15:0]</code>. That is precisely what our handler is going to do. So far we only have decided the syscall for print, which uses ID 1. So if the ID is read as 1, we need to do the appropriate function. Which is reading the string’s position and size from <code>x0</code> and <code>x1</code> (since that is where the user program passes them), and print that string to the output for the user program. This is implemented as follows:</p>
+<p><code>src/kernel/syscalls.rs</code></p>
+<pre><code class="language-rs">use crate::print;
+use crate::kernel::exceptions::ExceptionContext;
+
+pub fn handle_syscall(ctx: &amp;ExceptionContext) -&gt; () {
+    // when it was because of `svc`, 
+    // lower 16 bits of the ESR will have the syscall number.
+    let syscall_number = ctx.esr &amp; 0xffff; 
+
+    match syscall_number {
+        1 =&gt; sys_print(ctx).unwrap(),
+        _ =&gt; {
+            print!("Unknown syscall: {}", syscall_number).unwrap();
+        }
+    }
+}
+
+/* SYSCALL #1 -- PRINT */
+// expects x0 to have the pointer to the string and x1 to have the length of the string. 
+fn sys_print(ctx: &amp;ExceptionContext) -&gt; core::fmt::Result {
+    let ptr = ctx.x[0] as *const u8;
+    let len = ctx.x[1] as usize;
+
+    let s = unsafe { core::slice::from_raw_parts(ptr, len) };
+    let s = core::str::from_utf8(s).unwrap_or("");
+
+    print!("{}", s).unwrap();
+    Ok(())
+}
+</code></pre>
+<p>of course do not forget to add <code>pub mod syscalls;</code> to <code>kernel/mod.rs</code></p>
+<p>And that is all! Once the syscall handler returns out to the exception handler, the exception handler will return out using <code>ERET</code> and restore the user program’s context to the hardware. So after ERET we drop back to the place where the exception came from (which was EL0 64 bit mode at the user program). And execution continues at that place. So to the user program it looks like all that happened was that it used the <code>svc</code> instruction and then the execution moved on to the next line. But under the hood the <code>svc</code> caused an exception to the kernel’s exception handler which did the operation requested by the <code>svc</code>.</p>
+<p>And that is the syscall pipeline! Now whenever our user program wants to print anything, it will be able to seemingly do it without touching the MMIOs. This is more secure since the kernel can now inspect what the user program wants to be done. And accordingly either accept the request or complain about it being unsafe.</p>
+<h2 id="security"><a class="header" href="#security">Security</a></h2>
+<p>In our case our project is small in scope so we’re not going to focus on security a lot. But one method that so far the user program could try to do something malicious is instead of passing a valid string to the kernel, it might put inside <code>x0</code>, a pointer to some random data. Which will cause our kernel to panic. This is of course going to crash the kernel. We’re not going to talk about handling that scenario right now, but if you wish you may take it as an exercise for yourself. Perhaps Instead of doing <code>sys_print(ctx).unwrap()</code> in syscall handler, you could make the <code>sys_print</code> function itself encode a success code in one of the GPRs which the user program can read back to know if the request was successful or not.</p>
+<h2 id="final-codes"><a class="header" href="#final-codes">Final codes.</a></h2>
+<p>The final codes can be found in my original project <code>AtOS</code>’s GitHub reposiory. At the file system snapshot after the syscalls commit.</p>
+<p>Find the files at the below link.</p>
+<p>https://github.com/ZackyGameDev/AtOS/tree/3aefd06111c004eae08ada9204a61e9242fe9a8b</p>
+<p>(kindly ignore the timer.rs module along with the main.rs state)</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="first-user-program.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="first-user-program.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

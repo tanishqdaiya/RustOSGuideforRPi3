@@ -1,8 +1,10 @@
 # User Processes
 
+## Preface 
+
 Your operating system is not for running by itself. Ultimately of course the goal would be for it to run processes for the user, and for the user to be able to run whatever process they want on it. Which, of course, our OS will need to achieve in a safe manner. Without letting the user processes access the hardware through any CPU or MMIO registers which could be dangerous. Our ultimate goal for our operating system would be to facilitate a safe usage of hardware by the processes, in a asynchronous manner. That is, in a manner where multiple processes can run at the same time.
 
-# But what is a Process? 
+## But what is a Process? 
 
 Your computer or phone may have many different apps or programs on it. Normally something like your calculator app is not running on your device. It is usually stored on your storage/disk. However, when you wish to open the calculator app, somehow your operating system turns that bit of program on your disk into a running functioning execution of code. To put it plainly, the operating system reads the instructions and data of the app, and writes it to the memory (RAM). And then it sets `PC` to the first instruction meant to be executed from this newly loaded set of instructions in memory. Execution then continues and your app appears to run.
 
@@ -10,7 +12,7 @@ However, your app/program is still on your disk. It's not as if when the program
 
 Simply put, a process is running instance in memory of any program. At a bare minimum the way of creating a process is pretty similar to loading our `kernel8.img`. For a process, you go through its data/files on the disk to figure out what its image in memory will look like. And then you simply place it in memory at an appropriate memory location. Then you set a stack pointer for it, and simply set `PC` to the entry point of that process, i.e. the first instruction meant to execute for this new set of instructions. However, it differs from our `kernel8.img` in the sense that our operating system will keep track of processes and give them an identity. They will have a unique identification number, a name, information about who created them, their memory addresses, etc. Our operating system will then control how they interact with the hardware and decide which process gets to run at the moment. We will also manage new processes running and terminating. 
 
-# Loading a simple process
+## Loading a simple process
 
 A process will have many different parts to it. Also, deciding where to place the process and how to prevent it from accessing MMIO addresses will be a complicated procedure covered under Memory Management. Memory management is something which we will implement after we have some basic processes running and executing together on the CPU. For now, we will first create a process image on our host system itself, and just include it in our `kernel8.img`. Since it is included in `kernel8.img`, it will be loaded alongside to memory when RPi loads `kernel8.img` to memory. From their our kernel will copy that process image from `kernel8.img` section, over to where it is actually supposed to be. 
 
@@ -22,7 +24,7 @@ Then for starting the execution of the loaded program. We can simply check the o
 
 However, recall that we actually are supposed to have user programs to run in EL0. And also that any running program executing in EL0 is actually going to use the `SP_EL0` register to find the stack pointer. So we will need to setup that as well. It is a very similar process to how we dropped from EL2 to EL1 into our kernel. As we will see.
 
-# User project
+## User project
 
 Firstly lets start off by creating said user project. with the following in our project directory at `src/`.
 
@@ -48,7 +50,7 @@ The standard library also defines higher level featuers which aren't syscalls by
 
 The way we are going to do this is that the entire user crate that we have created will be a space for our stdlib source code. create a file `src/lib.rs` and unlike `main.rs`, `lib.rs` signifies to rust compiler that this project is meant to be used as a library for other rust projects. Once it is done we are going to create another directory `src/bin/` and within this directory will be our user programs that will use the stdlib that we write. 
 
-# Writing the first user program
+## Writing the first user program
 
 Next, in `src/bin/` directory create a new files named whatever you want. For example `init.rs`. In rust, all the files in the `bin/` directory are compiled into separate individual output binaries. And you guessed it, they will be able to use our `lib.rs` as the stdlib. For now let us just focus on compiling a user program and getting it loaded and executing in the RPi memory. We will look into writing stdlib some other time. Write your `init.rs` as another baremetal code similar to our kernel's `main.rs`.
 
@@ -89,7 +91,7 @@ For now, our main focus is first getting the user process in the memory and runn
 
 Now anything in lib.rs can be imported/included in our `bin/` codes using the `user` crate name. Which in our scenario we do `use user::println;`
 
-## Linker
+### Linker
 
 Now as for the linker, we need to tell the compiler where we are going to load the program for execution. On the raspberry pi 3b+ you can pick any address between your kernel ending address to roughly `0x3EFFFFFF`. For safety we will just pick some address away from our kernel at `0x200_000`. That is where I'm choosing to put our process for now. You can choose any safe address at this stage, however ultimately it doesn't matter when we get to implementing MMU.
 
@@ -121,7 +123,7 @@ SECTIONS
 }
 ```
 
-## Compilation
+### Compilation
 
 now all you need to do is to compile your code as usual. 
 
@@ -155,7 +157,7 @@ This will read the ELF file's header information and provide you some informatio
 
 That is the address of the first instruction meant to be executed in our `init.bin` image. 
 
-# Running the first user program
+## Running the first user program
 
 Now, you have the image and you know where to start the execution of the image. All you need to do now is include the `init.bin` image data in your `kernel8.img` and make it copy it to the correct address `0x200_000` in memory. Then, to start execution of it from the entry point address.
 
@@ -234,11 +236,11 @@ x = 2
 init program is done working, it will now loop forever.
 ```
 
-# postface
+## Postface
 
 Now, just like that you have a user program separate from your kernel project. Compiled separately and loaded by your kernel into memory. Running in EL0 mode as it should. However, it is still far fetched to call it a "Process". Since currently our OS cannot track, control or facilitate the user program in anyway. Once it is loaded into memory, it is just going to run the same way our kernel was running. We are going to change this in future chapters. First we will write a new `println!` functionality for our user space which will be a proper syscall instead of our current bodge. And then we will create a way for the kernel to routinely get control back from the running user program. Letting it inspect if everything is okay or run for a while doing whatever it wants, before it chooses to give back control to a running user program.
 
-# Final codes
+## Final codes
 
 `main.rs`
 ```rs

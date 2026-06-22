@@ -1,0 +1,1159 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Exception Handling - Rust OS Guide for Rasperry Pi 3</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-0392ca55.css">
+        <link rel="stylesheet" href="css/chrome-fc474251.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-0ce8d503.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-3ad36685.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust OS Guide for Rasperry Pi 3</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="hardware-exceptions"><a class="header" href="#hardware-exceptions">Hardware Exceptions</a></h1>
+<p>You may already be familiar with what an exception is in programming. It is when you write some code which does something it is not supposed to do and your computer screams at you. Stuff like dividing by zero, using a variable that was never defined, etc.</p>
+<p>However, even on hardware level there are some actions which inherently you are not supposed to do. For example if you tell the CPU to read from some memory address which doesnt even exist. Such hardware exceptions are dealt with differently than the exceptions in programming languages.</p>
+<p>In programming languages, when a exception occurs, it is usually sent to the exception handler. The exception handler is provided information about where the exception occured and what kind, and it kindly lets you know in the console/terminal output.</p>
+<p>In hardware, when an exception occurs, an <strong>interupt</strong> occurs. Which basically means whatever PC the CPU was executing at is immediately paused. the value of the PC is stored, and then the CPU <em>jumps</em> to a different address in memory, where it expects to find instructions which– if the CPU executes– will handle the exception.</p>
+<p>In simpler terms, you have to plan beforehand how you want an hardware exception to be dealt with. You have to write code for it, and compile it to machine language that can be directly executed by the CPU. And then you have to put all that code in memory, and you have to tell your CPU at which address in your memory you have placed said code. So now whenever an exception occurs, the CPU will make a backup of current PC register value, and change PC to the address where your <em>exception handler</em> code is.</p>
+<p>Now, naturally you might want to handle different kinds of exceptions differently. So you have to do this process of writing handler code and telling your CPU where it is, for each kind of exception. Telling your CPU where the handler is, is as simple as simply writing the handler code starting address to a certain register of the CPU.</p>
+<h1 id="exception-levels"><a class="header" href="#exception-levels">Exception Levels</a></h1>
+<p>You never execute user programs at the same degree of priviledge as the kernel itself. This is a basic in OS development. If you have a program written by a third party, it may be malicious, so you don’t give it too much priviledge to interact with the hardware directly. However, what if some exception occurs in the user program? And what if handling that exception requires you to interact with the hardware directly? In this case when an exception occurs, we go to a higher level of hardware priviledge.</p>
+<p>In Raspberry Pi 3b+’s ARM Cortex-A53 CPU core, this concept is already implemented. Priviledge levels are called “Exception levels”. There are four exception levels. EL0, EL1, EL2, EL3.</p>
+<ul>
+<li>EL0: Used for user programs, lowest hardware priviledge</li>
+<li>EL1: Used for the kernel, higher hardware priviledge</li>
+<li>EL2: Used for virtualization, multiple OS at the same time</li>
+<li>EL3: Used for suuuper low level security stuff, affects the processor itself. Highest priviledge.</li>
+</ul>
+<p>The last two will not be relevant to our project. Mainly we will be working with EL0 and EL1.</p>
+<p>Whenever a hardware exception occurs in EL0, either the exception is handled in EL0 itself, or if needed the level is raised and exception is sent to EL1 to be handled.</p>
+<h1 id="relevant-registers"><a class="header" href="#relevant-registers">Relevant Registers</a></h1>
+<h2 id="elr_el1"><a class="header" href="#elr_el1"><code>ELR_EL1</code></a></h2>
+<p>The name stands for “Exception Link Register for EL1”. We have learned that whenever an exception occurs, the CPU will change PC to the address of the appropriate exception handler instructions. However once the exception handling instructions conclude their job and handle the exception, the program execution may need to go back to the address where it was originally executing at right before the exception occured. How does the CPU know where to go back to? or where to Return to after an exception handling?</p>
+<p>The CPU stores the original PC to return to in the <code>ELR_EL1</code> register. However, this happens only if the exception is being handled in EL1. For instance, if an exception occured in EL1, and hardware decided to raise priviledge level to EL2 in order to handle it, now a different register called <code>ELR_EL2</code> will be used to store the return address into.</p>
+<h2 id="spsr_el1"><a class="header" href="#spsr_el1"><code>SPSR_EL1</code></a></h2>
+<p>Stands for “Saved Program Status Register for EL1”. The CPU has many other registers other than PC which work as memory to hold important information about the current execution. We will discuss them more later, but it includes something called “flags”, “Interrupt masks”, “program status”, etc. When the CPU jumps to exception handler, it also must save this important information in case the exception handler modifies any of it. That is what this register holds. This register holds the PSTATE (program state) information of the program that was being executed right before the jump to exception handler occured. It also holds information about whether if on return, the CPU must stay in same EL or drop lower to EL1.</p>
+<p>There are also <code>SPSR_EL2</code>, <code>SPSR_EL3</code>… for when the exeption is taken to other ELs. However right now we will only see exceptions being taken to EL1.</p>
+<h2 id="currentel"><a class="header" href="#currentel"><code>CurrentEL</code></a></h2>
+<p>Less of an actual piece of memory, but more of a user convenience. Whenever we wish to check what EL we are currently in, we can perform a read on the <code>CurrentEL</code> register. Which will return one of the following values: <code>0b0000</code> for EL0, <code>0b0100</code> for EL1, <code>0b1000</code> for EL2, and <code>0b1100</code> for EL3. You may have realized to get the CurrentEL as integer, you can simply do <code>(CurrentEL &gt;&gt; 2) &amp; 0b11</code></p>
+<h2 id="elr_el2"><a class="header" href="#elr_el2"><code>ELR_EL2</code></a></h2>
+<p>Same as the EL1 counterpart. Holds the address to return to upon <code>ERET</code> instruction if currently in EL2.</p>
+<h2 id="spsr_el2"><a class="header" href="#spsr_el2"><code>SPSR_EL2</code></a></h2>
+<p>Same as the EL1 counterpart. When we ERET while in EL2, this register is checked to see which state must be ‘restored’ upon returning to the address in <code>ELR_EL2</code></p>
+<h2 id="sp_el0"><a class="header" href="#sp_el0"><code>SP_EL0</code></a></h2>
+<p>This is the stack pointer register for EL0 mode. Higher ELs can also access it. User programs typically use this stack pointer. in EL0 mode, <code>sp</code> register directly references to this register.</p>
+<h2 id="sp_el1"><a class="header" href="#sp_el1"><code>SP_EL1</code></a></h2>
+<p>Same as earlier but for EL1 and higher modes. EL0 cannot access this. Mainly for the stack pointer of the kernel programs executions.</p>
+<h2 id="vbar_el1"><a class="header" href="#vbar_el1"><code>VBAR_EL1</code></a></h2>
+<p>Stands for Virtual Address Base Register for EL1. Earlier we mentioned that we need to tell the CPU through a register, which address to jump to when an exception occurs. This register holds the address.</p>
+<p>But wait.. Only one register? Aren’t there many kinds of exceptions possible as earlier discussed? Is there a different register for every single exception type handler?</p>
+<p>No. Firstly, there can be four kinds of exceptions:w</p>
+<ul>
+<li>Synchronous exception (SYNC): caused directly because of execution of some instruction that warranted an exception occurance.</li>
+<li>Interrupt Request (IRQ): When some hardware event occurs, like a network card receives some data, or UART receives new bytes, the hardware generates an exception to get the CPU’s attention to let it know that the hardware event has occured.</li>
+<li>Fast Interrupt Request (FIQ): Similar to IRQ, but for wayyy more higher priority events. They are categorized into this type because they may need special more higher priority attention as soon as possible.</li>
+<li>System Error (SError): For hardware failures that occur at some random point, independant of instruction execution progress. E.g. an instruction asked for some data, it gets the acknowledgement, execution moves on. But later on during the actual data transfer the hardware has some failure.</li>
+</ul>
+<p>There is another way to differentiate exceptions based on the mode of execution right before exception occured:</p>
+<ul>
+<li>EL1t (t stands for thread): If before exception, program was executing in EL1 mode, and using the SP_EL0 register as the stack pointer.</li>
+<li>EL1h (h stands for handler): If before exception, program was executing in EL1 mode, and usnig the SP_EL1 regsiter as the stack pointer.</li>
+<li>EL0 64 bit: Before exception we were executing in EL0, in 64 bit mode.</li>
+<li>EL0 32 bit: Before exception we were executing in EL0, in 32 bit mode.</li>
+</ul>
+<p>Yes, as you may have noticed you can choose which of the two registers are used as stack pointer in EL1. We will discuss that later. For now just know that it can be done.
+Secondly, yes, EL0 could be running in both 32bit and 64bit modes. The entire processor can switch between the two modes. But you can also selectively choose for only EL0 to run in 32bit mode.</p>
+<p>Now, for every type of Exception, there can be four sources of where it came from. (EL1t, EL1h, EL0 32 and 64.) So in total, there could be 16 possible combination of cases which need separate handlers. Does this mean you need 16 registers for the address of each register? The answer is no. The CPU will expect you to keep all the 16 handlers next to each other in memory, with exactly 128 bytes of difference between each handler’s address. It has to be in the following order: firstly for EL1t: SYNC handler, then 128 bytes later IRQ handler for EL1t, then FIQ, then SError. Then the same order for EL1h, then EL0 64 bit, and then 32 bit.</p>
+<p>So the CPU actually expects the handlers to be stored like this in memory:
+let’s say the handler for EL1t, SYNC exception is stored at 0x00, then rest will be at addresses:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Exception Origin</th><th>SYNC</th><th>IRQ</th><th>FIQ</th><th>SError</th></tr>
+</thead>
+<tbody>
+<tr><td>EL1t</td><td>0x000</td><td>0x080</td><td>0x100</td><td>0x180</td></tr>
+<tr><td>EL1h</td><td>0x200</td><td>0x280</td><td>0x300</td><td>0x380</td></tr>
+<tr><td>EL0 (64 bit)</td><td>0x400</td><td>0x480</td><td>0x500</td><td>0x580</td></tr>
+<tr><td>EL0 (32 bit)</td><td>0x600</td><td>0x680</td><td>0x700</td><td>0x780</td></tr>
+</tbody>
+</table>
+</div>
+<p>And then that’s the neat part, you only need to tell CPU the address where this table begins. That is, address of EL1t SYNC Exception handler. The rest it already knows will be at offsets of 128 bytes.</p>
+<p>Now, you may have noticed that this means for each exception handler you only get like 128 bytes, and if one instruction is of 4 bytes, you can only write 32 instructions for each handler, including <code>ERET</code>. This is not necessary. You can kind of cheat this limitation by simply using a <code>BL</code> instruction or something similar, to simply jump to some other location in memory where the actual handler code exists. This is typically the standard way in most OS.</p>
+<p>Additional note, the address in <code>VBAR_EL1</code> must be 2048 bytes aligned. that basically means that the address must be divisible by 2048.</p>
+<h2 id="hcr_el2"><a class="header" href="#hcr_el2"><code>HCR_EL2</code></a></h2>
+<p>Stands for Hypervisor Configuration Register. EL2 is often called hypervisor mode. This register is suffixed with EL2 because it can only be modified in EL2 or higher priviledge mode. This register acts as a rulebook for EL1. What mode EL1 executes in (32 or 64 bit), whether EL1 exceptions should directly be taken to EL2 or not, interrupts setup, memory translation, etc are configured here. When the system boots the state of this register is random (UNKNOWN).</p>
+<h2 id="esr_el1"><a class="header" href="#esr_el1"><code>ESR_EL1</code></a></h2>
+<p>Stands for Exception Syndrome Register for EL1. Holds more detailed information about the identity of the exception. Only works if exception was of SError type. Otherwise it is useless.</p>
+<h2 id="far_el1"><a class="header" href="#far_el1"><code>FAR_EL1</code></a></h2>
+<p>Stands for Fault Address Register for EL1. If and only if the exception was of type SError, and it involved some sort of memory failure, this register will hold that exact virtual memory address that caused the crash. Whether or not the SError was related to memory can be confirmed through information held in <code>ESR_EL1</code>. This register is completely useless in other scenarios.</p>
+<p>Well, that wraps it up!!! That was a lot of information to memorize, it will take time to truly get to know all of these registers personally.</p>
+<h1 id="booting-to-el1"><a class="header" href="#booting-to-el1">Booting to EL1</a></h1>
+<p>When you start your OS. It actually starts in EL2 for the Raspberry Pi 3 CPU. Since we want our OS to work in EL1. We will need to switch to EL1 in boot process in <code>entry.s</code>. Sadly there is no actual direct way to just switch over to a different EL. But the correct way to do it is much more clever.</p>
+<p>You already know if we are in EL1, and an exception occcurs, and the hardware decides that it needs to be taken to EL2, then the CPU raises priviledge to EL2, and then exception is handled there. Wherein at the end <code>ERET</code> instructionn is executed which causes the CPU to go back to EL1.</p>
+<p>But the trick is you don’t actually need to be handling some exception for <code>ERET</code> to send you back to EL1! The CPU is just a machine, it does not know what was going on. All it does is if you execute <code>ERET</code> in EL2, it will check <code>ELR_EL2</code> to know which address to go to, and it will simply go there. And it will check <code>SPSR_EL2</code> to know what mode to set the execution to once it goes to that address. You don’t need to be handling an exception! As long as you set <code>ELR_EL2</code> and <code>SPSR_EL2</code> to some valid values, you can use <code>ERET</code> whenever you want in EL2!</p>
+<p><em>So…</em> we <em>could</em> simply set <code>SPSR_EL2</code> in such a way that the CPU thinks that upon <code>ERET</code> it must change EL to EL1.</p>
+<p>First know the general structure of a SPSR register:</p>
+<pre><code class="language-arm">Bits [4:0]  = M field (mode)
+Bit  6      = F (FIQ mask)
+Bit  7      = I (IRQ mask)
+Bit  8      = A (SError mask)
+Bit  9      = D (Debug exception)
+Bits [31:27] = NZCVQ flags
+Other bits = Reserve or not relevant right now
+</code></pre>
+<ul>
+<li>Bits [4:0] are:
+<ul>
+<li>0b00000: we’re supposed to enter EL0 mode after <code>ERET</code></li>
+<li>0b00100: EL1t after <code>ERET</code></li>
+<li>0b00101: EL1h</li>
+<li>0b01000: EL2t</li>
+<li>0b01001: EL2h (all five being AArch64 mode)</li>
+</ul>
+</li>
+<li>Bits 6, 7, 8 are for turning off exception handling for FIQ, IRQ and SError type exceptions (set bit to 1 to ignore them). SYNC type exceptions do not have an option to be ignored because the CPU cannot continue execution without them handled.</li>
+<li>Bit 9 handles Debug exceptions. They are usually SYNC exceptions, but unlike failure they’re usually for things like breakpointns, debugging, etc.</li>
+<li>Bits 31 to 27 are just the flags that the CPU sets during instruction execution. They are just saved here upon exception because upon ERET the following instructions may rely on flags set by previous instructions that were executing before exception occured.</li>
+</ul>
+<p>Now, in order to switch to EL1 mode. All we need to do is set Bits 4:0 to 64 bit EL1h mode. (Not EL1t because we’re switching for our kernel, and kernel typically uses SP_EL1). Set appropriate values for the interrupt masks and endianness, and then simply execute <code>ERET</code>!</p>
+<p>We can do this during our entry assembly.</p>
+<p>Now, in our entry.S instead of directly doing <code>bl main</code> we do:</p>
+<pre><code class="language-arm">// EL stack pointer
+ldr     x0, =_stack_top
+msr     SP_EL1, x0
+
+mov     x0, #(1 &lt;&lt; 31) // bit 31 selects Aarch32/64
+msr     HCR_EL2, x0 // HCR_EL2 is like "a rulebook that EL2 writes for EL1"
+
+// set SPSR_EL2 to EL1h, basically once we ERET, we must switch to EL1h mode
+mov     x0, #(0b00101)  // EL1h 
+orr     x0, x0, #(0b1111 &lt;&lt; 6) // mask all exceptions (D, A, I, F)
+msr     SPSR_EL2, x0
+
+// finally set the ERET PC
+adr     x0, main
+msr     ELR_EL2, x0
+
+eret // insane
+</code></pre>
+<p>Notice that we also set bit 31 in <code>HCR_EL2</code> register to 1. This enables 64 bit mode for EL1. Other bits are irrelevant to us right now.</p>
+<p>Now let’s create a utility function that can read <code>CurrentEL</code> register so we can confirm our code is working:</p>
+<pre><code class="language-rs">use core::arch::asm;
+pub fn get_current_el() -&gt; u64 {
+    let el: u64;
+    unsafe { 
+        asm!(
+            "mrs {0}, CurrentEL",
+            "lsr {0}, {0}, #2",
+            out(reg) el,
+        ); 
+    }
+    el
+}
+</code></pre>
+<p>Now just include this function in your main.rs and test it out!</p>
+<pre><code class="language-rs">println!("Current EL is: EL{}", get_current_el()).unwrap();
+</code></pre>
+<p>You get output:</p>
+<pre><code>Current EL is: EL1
+
+</code></pre>
+<p>That means our EL is successfully EL1!</p>
+<p>We can now move to exception handling.</p>
+<h1 id="setting-up-and-loading-exception-table"><a class="header" href="#setting-up-and-loading-exception-table">Setting up and loading exception table</a></h1>
+<p>Earlier we described what format we have to prepare our exception vector table in memory for the <code>VBAR_EL1</code> register.</p>
+<p>We can write the entire table in simple assembly. Since we want to stay away from assembly and stay in rust as much as possible, we’ll make the exception table simply call a rust function with appropriate arguments for each exception type and source.</p>
+<p>Firstly, the exception table must be aligned to 2048 bytes. That means lower 11 bits in the address must be zero. We can do this in assembly as follows:</p>
+<pre><code class="language-asm">.align 11              // 2^11 = 2048 alignment
+</code></pre>
+<p>Now give a label (to name the start of our vector table)</p>
+<pre><code class="language-asm">el1_vectors:
+</code></pre>
+<p>and then follow it with something like the following:</p>
+<pre><code class="language-asm">b   el11t_sync
+.space 124
+b   el11t_irq
+.space 124
+b   el11t_fiq
+.space 124
+b   el11t_serror
+.space 124
+
+b   el11h_sync
+.space 124
+b   el11h_irq
+.space 124
+b   el11h_fiq
+.space 124
+b   el11h_serror
+.space 124
+
+b   el1064_sync
+.space 124
+b   el1064_irq
+.space 124
+b   el1064_fiq
+.space 124
+b   el1064_serror
+.space 124
+
+b   el1032_sync
+.space 124
+b   el1032_irq
+.space 124
+b   el1032_fiq
+.space 124
+b   el1032_serror
+.space 124
+</code></pre>
+<p>The <code>b</code> instruction, called branch instruction, basically just jumps to a given address in memory. We have set up 16 branch instructions here, one for each combination of exception type and source. Notice how each branch instruction has a different label for the address to branch to. We can either Define 16 functions in rust with the name of these labels. However, when we jump to rust, rust actually may completely destroy whatever values were in the CPU registers, because it needs the CPU registers for its own rust related purposes. But the handler may need to have the original values in the registers preserved, to inspect during exception handling. So we will first save all the values of all the relevant registers into the memory. Then we will call the rust handler function, this time just giving it the address to all the relevant register values in memory. So it can still have original values somewhere it can see.</p>
+<h1 id="handling-exceptions-in-rust"><a class="header" href="#handling-exceptions-in-rust">Handling Exceptions in Rust</a></h1>
+<p>How do we pass values to rust? In asm, how do we call a rust function if the function actually takes in some arguments? in <code>entry.s</code> when we calk the rust main function, it doesn’t expect any arguments so we could simply do a branch instruction to just jump to the address of the rust main function in memory like any other address label. However, when we wish to give arguments to a rust function, we can actually do so by passing the values in the x0, x1, …, x7 registers. This gives you 8 arguments that you can pass to the rust function (since these registers are 8 byte sized, that’s the max size of the arguments you can pass). For greater than 8 arguments, you can utilize the stack. All of this is defined according to the “<a href="https://github.com/ARM-software/abi-aa/releases">AArch64 Procedure Call Standard (AAPCS64)</a>”.</p>
+<p>Now we are passing more than 8 arguments. We will need to pass all the General Purpose Registers (GPRs) and the registers relevant to exception handling– <code>ELR_EL1</code>, <code>SPSR_EL1</code>, <code>ESR_EL1</code>, <code>FAR_EL1</code>. Last four registers are for the Rust program to read/modify return-to state for the exception, and last two being for exception diagnosis and details.</p>
+<p>You must be familiar with <code>structs</code> in C. They are a way to group up different datatypes into memory. When you create a struct having three different members. Then you must know that those three members are placed consecutively in memory next to each other. So as long as you have the starting address of the struct (<code>*struct</code> pointer), you can determine the address of any member by adding its offset from the beginning of the structure.</p>
+<p>So far a struct with int, int, char, memory will look like:</p>
+<pre><code>| 4 bytes for int | 4 bytes for int | 1 byte for char |
+^ start of        ^                 ^                 ^
+memory           (0x004)           (0x008)           (0x009)
+(0x000)
+</code></pre>
+<p>So what we will do, is instead of passing all the different registers to the Rust function as multiple arguments, we are going to simply write all the register values to memory in a way, so that it represents a valid Rust/C structure. And then we will simply give the starting address of the part of memory to Rust as a pointer to a structure.</p>
+<p>First we will use a single byte to categorize the Exception type and source:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[repr(u8)]
+#[derive(Copy, Clone)]
+pub enum ExceptionType {
+    _SYNC,  // 0
+    _IRQ,  // 1
+    _FIQ, // and so on
+    _SE,
+}
+
+#[repr(u8)]
+#[derive(Copy, Clone)]
+pub enum ExceptionSource {
+    _EL1t,
+    _EL1h,
+    _EL064,
+    _EL032,
+}
+<span class="boring">}</span></code></pre>
+<p>Let’s say the struct will look like:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[repr(C)]
+pub struct ExceptionContext {
+    pub etype: ExceptionType, // u8
+    pub esource: ExceptionSource, // u8
+    pub _padding: [u8; 6], // because this struct follows c style repr
+    pub x: [u64; 31],   // x0–x30
+    pub elr: u64,
+    pub spsr: u64,
+    pub esr: u64,
+    pub far: u64,
+}
+<span class="boring">}</span></code></pre>
+<p>Note the <code>repr(C)</code> attribute. Rust might try to optimize the way it stores the struct objects in memory. We don’t want that. We want the certainty and unambiguity of how structs are in C. So we have the option of telling rust that, by this attribute.
+Other than that you will notice that I have included something called “padding”.
+This is because in C style structs, u64 values are 8 byte aligned. E.g. they are placed in such a way so that Their address is divisible by 8. But u8 are 1 byte aligned.
+Also since largest member in the struct is 8 aligned, the entire struct itself is also expected to be 8 aligned. That’s why we have to keep a padding of 6 bytes. Because there will be a padding 6 bytes by default, we explicitly write it here to make the code more clear.</p>
+<p>Now that we know what the struct looks like, we can go ahead in the asm, and save the register values to memory in the same format as this struct representation is expected to be.</p>
+<p>And then lets say our Rust function that we will call looks like:</p>
+<pre><code>#[no_mangle]
+pub extern "C" fn handle_exception_el1(ctx: &amp;mut ExceptionContext) {
+    ...
+}
+</code></pre>
+<p>So our final pipeline for the exception will be:</p>
+<p>Exception table entry points to an assembly label.
+Jump to that label -&gt; At that label, instructions exist to save registers to a 8 aligned memory address (lets call that address <code>ectx</code>). -&gt; Also write appropriate values for etype and esource members of struct. -&gt; write address <code>ectx</code> to x0 (as argument for the rust funciton) -&gt; then finally <code>bl handle_exception_el1</code> to rust handler function. -&gt; rust function returns and comes back -&gt; LOAD the registers from memory back to original values. -&gt; ERET.</p>
+<p>Notice that when we call a Rust funciton using <code>bl</code>, then when the function concludes, it returns back to the location in original assembly where the <code>bl</code> was called.</p>
+<p>You can store the register values in any location in memory. However, according to the official ARM standard, stack pointers are always 16 byte aligned. So we can simply write the entire struct on the stack (since 16 aligned address is automatically 8 aligned). Also, using the stack has many conveniences like nested exceptions working naturally.</p>
+<p>So in our original pipeline. In assembly, we will first move the stack pointer by the amount of bytes needed for the entire struct. Then manually write all the registers and struct member values to memory, with reference to stack pointer. Then pass stack pointer to x0 and call rust handler function.</p>
+<p>Note that from here since the assembly will become very repetitive if we try to write the entire handler pipeline 16 different times for each exception table entry.
+So we will utilize something called “assembly macros”. It is recommended to look it up before reading forward.</p>
+<h2 id="assembly-for-handing-exception-handling-to-rust"><a class="header" href="#assembly-for-handing-exception-handling-to-rust">Assembly for handing exception handling to Rust</a></h2>
+<p>To show you the general structure. For each of the 16 entries, we want to do the following:</p>
+<pre><code class="language-asm">.macro HANDLE_EXCEPTION type source
+    sub     sp, sp, #0x120 // allocating space for etype + esource + gprs + 4 u64 reg
+    
+    // save registers
+    SAVE_REG
+
+    // call rust handler with correct arg
+    SET_EXCEPTION_ARG \type \source
+    bl      handle_exception_el1
+
+    // load back the registers
+    LOAD_REG
+
+    add     sp, sp, #0x120 // restore sp
+
+    eret // handling completed :)
+.endm
+</code></pre>
+<p>In rust, the value of exception type can be 0 to 3 for sync, irq, fiq, and SError. And source can be 0 to 3 for <code>EL1t</code>, <code>EL1h</code>, <code>EL0 64 bit</code>, <code>EL0 32 bit</code>. As you can see in the Rust <code>enum</code> definitions earlier.</p>
+<ul>
+<li>First we move the pointer by subtracting the number of bytes we need.</li>
+<li><code>SAVE_REG</code> is a macro which saves the registers to the correct locations in memory with the stack pointer as the start of the struct.</li>
+<li><code>SET_EXCEPTION</code> writes the <code>ExceptionType</code> and <code>ExceptionSource</code> appropriate values to the first and second byte of the struct. And it also writes the struct address to <code>x0</code>.</li>
+<li>Then we call the rust function. It will return back after handling the exception.</li>
+<li><code>LOAD_REG</code> this macro reads the memory and writes the values from the struct in memory back to the original registers.</li>
+<li>Then since we don’t need the bytes we used we can move the stack pointer forward again to the original position.</li>
+</ul>
+<p>The subtracting and adding to stack pointer is to abide the method of pushing and popping from stack. In a way we are manually pushing to the stack by moving the stack and writing values to memory addresses after it.
+And then adding to the stack is us popping from the stack.</p>
+<p><code>SAVE_REG</code> macro works as follows:</p>
+<pre><code class="language-asm">.macro SAVE_REG
+    stp     x0,  x1,  [sp, #0x08]
+    stp     x2,  x3,  [sp, #0x18]
+    stp     x4,  x5,  [sp, #0x28]
+    stp     x6,  x7,  [sp, #0x38]
+    stp     x8,  x9,  [sp, #0x48]
+    stp     x10, x11, [sp, #0x58]
+    stp     x12, x13, [sp, #0x68]
+    stp     x14, x15, [sp, #0x78]
+    stp     x16, x17, [sp, #0x88]
+    stp     x18, x19, [sp, #0x98]
+    stp     x20, x21, [sp, #0xA8]
+    stp     x22, x23, [sp, #0xB8]
+    stp     x24, x25, [sp, #0xC8]
+    stp     x26, x27, [sp, #0xD8]
+    stp     x28, x29, [sp, #0xE8]
+    str     x30,      [sp, #0xF8]
+    
+    mrs     x0, ELR_EL1
+    str     x0, [sp, #0x100]
+
+    mrs     x0, SPSR_EL1
+    str     x0, [sp, #0x108]
+
+    mrs     x0, ESR_EL1
+    str     x0, [sp, #0x110]
+
+    mrs     x0, FAR_EL1
+    str     x0, [sp, #0x118]
+.endm
+</code></pre>
+<p><code>stp</code> instruction is basically for writing two 8-byte registers to memory together as a pair. At some memory address.</p>
+<p>First we write all GPRs. Then once we can safely modify x0 value, we use it to write the remaining four registers.</p>
+<p><code>LOAD_REG</code> macro is similar.</p>
+<pre><code class="language-asm">.macro LOAD_REG
+    // load these first so x1 won't be needed after
+    ldr     x1, [sp, #0x100]
+    msr     ELR_EL1, x1
+
+    ldr     x1, [sp, #0x108]
+    msr     SPSR_EL1, x1
+    // we do not need to load back the other two registers
+
+    ldp     x0,  x1,  [sp, #0x08]
+    ldp     x2,  x3,  [sp, #0x18]
+    ldp     x4,  x5,  [sp, #0x28]
+    ldp     x6,  x7,  [sp, #0x38]
+    ldp     x8,  x9,  [sp, #0x48]
+    ldp     x10, x11, [sp, #0x58]
+    ldp     x12, x13, [sp, #0x68]
+    ldp     x14, x15, [sp, #0x78]
+    ldp     x16, x17, [sp, #0x88]
+    ldp     x18, x19, [sp, #0x98]
+    ldp     x20, x21, [sp, #0xA8]
+    ldp     x22, x23, [sp, #0xB8]
+    ldp     x24, x25, [sp, #0xC8]
+    ldp     x26, x27, [sp, #0xD8]
+    ldp     x28, x29, [sp, #0xE8]
+    ldr     x30,      [sp, #0xF8]
+.endm
+</code></pre>
+<p><code>SET_EXCEPTION_ARG</code> macro works as follows:</p>
+<pre><code class="language-asm">.macro SET_EXCEPTION_ARG type source
+    mov     w9, #\type
+    strb    w9, [sp]
+    mov     w9, #\source
+    strb    w9, [sp, #1]
+    mov     x0, sp
+.endm
+</code></pre>
+<p>the w9 register is another GPR. It is basically x9 register but for 32 bit mode. It is kind of useless in AArch64 mode. It basically points to the lower 4 bytes of the x9 register. But we use it since the store byte instruction <code>strb</code> only accepts one of the 4 byte <code>w0...w30</code> registers. <code>x9</code> would not be accepted. We use <code>strb</code> instruction because we only wish to write a single byte (the lowest byte of w9 is written).</p>
+<p>I have labelled all the source and type values as well at the beginning of my assembly instructions.</p>
+<pre><code class="language-asm">.equ E_SYNC,   0 // to tell rust handler what the exception is
+.equ E_IRQ,    1
+.equ E_FIQ,    2
+.equ E_SERROR, 3
+
+.equ FROM_EL1t, 0
+.equ FROM_EL1h, 1
+.equ FROM_EL064, 2
+.equ FROM_EL032, 3
+</code></pre>
+<p>So now, finally, the labels that each entry jumps to can be defined as:</p>
+<pre><code class="language-asm">
+el11t_sync:
+    HANDLE_EXCEPTION E_SYNC FROM_EL1t
+    
+el11t_irq:
+    HANDLE_EXCEPTION E_IRQ FROM_EL1t
+
+el11t_fiq:
+    HANDLE_EXCEPTION E_FIQ FROM_EL1t
+
+el11t_serror:
+    HANDLE_EXCEPTION E_SERROR FROM_EL1t
+
+
+el11h_sync:
+    HANDLE_EXCEPTION E_SYNC FROM_EL1h
+
+el11h_irq:
+    HANDLE_EXCEPTION E_IRQ FROM_EL1h
+
+el11h_fiq:
+    HANDLE_EXCEPTION E_FIQ FROM_EL1h
+
+el11h_serror:
+    HANDLE_EXCEPTION E_SERROR FROM_EL1h
+
+
+el1064_sync:
+    HANDLE_EXCEPTION E_SYNC FROM_EL064
+
+el1064_irq:
+    HANDLE_EXCEPTION E_IRQ FROM_EL064
+
+el1064_fiq:
+    HANDLE_EXCEPTION E_FIQ FROM_EL064
+
+el1064_serror:
+    HANDLE_EXCEPTION E_SERROR FROM_EL064
+
+
+el1032_sync:
+    HANDLE_EXCEPTION E_SYNC FROM_EL032
+
+el1032_irq:
+    HANDLE_EXCEPTION E_IRQ FROM_EL032
+
+el1032_fiq:
+    HANDLE_EXCEPTION E_FIQ FROM_EL032
+
+el1032_serror:
+    HANDLE_EXCEPTION E_SERROR FROM_EL032
+</code></pre>
+<p>And that wraps up the Assembly code! you can wrap it up in some file like <code>src/exception.s</code>. And then give your assembly section a name at the top like</p>
+<pre><code class="language-asm">.section ".text.vectors"
+</code></pre>
+<p>And then simply modify linker script <code>linked.ld</code> to place the exception table in memory wherever you wish.</p>
+<pre><code class="language-ld">    .text :
+    {
+        *(.text.boot)
+        *(.text.vectors)
+        *(.text*)
+    }
+</code></pre>
+<h2 id="completing-the-rust-function"><a class="header" href="#completing-the-rust-function">Completing the Rust function</a></h2>
+<p>Now that your assmebly is correctly saving exception context to memory and passing it to a rust functions you just need to work in rust from now!
+For now, we’re not going to do anything crazy, lets just make the handler print all the exception context it is receiving, as a test.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// called by `exceptions.s`
+#[no_mangle]
+pub extern "C" fn handle_exception_el1(ctx: &amp;mut ExceptionContext) {
+    
+    println!("An exception has been detected :D").unwrap();
+    
+    // printing the full context for now.
+    let etype_str = match ctx.etype {
+        ExceptionType::_SYNC =&gt; "SYNC",
+        ExceptionType::_IRQ  =&gt; "IRQ",
+        ExceptionType::_FIQ  =&gt; "FIQ",
+        ExceptionType::_SE   =&gt; "SError",
+    };
+    let esource_str = match ctx.esource {
+        ExceptionSource::_EL1t =&gt; "EL1t",
+        ExceptionSource::_EL1h =&gt; "EL1h",
+        ExceptionSource::_EL064 =&gt; "EL064",
+        ExceptionSource::_EL032 =&gt; "EL032",
+    };
+    println!("=== Exception Context ===").unwrap();
+    println!("Type : {} ({})", etype_str, ctx.etype as u8).unwrap();
+    println!("Source : {} ({})", esource_str, ctx.esource as u8).unwrap();
+    println!("ELR  : {:#018x}", ctx.elr).unwrap();
+    println!("SPSR : {:#018x}", ctx.spsr).unwrap();
+    println!("ESR  : {:#018x}", ctx.esr).unwrap();
+    println!("FAR  : {:#018x}", ctx.far).unwrap();
+    println!("Registers:").unwrap();
+    for i in 0..31 {
+        println!("  x{:02} = {:#018x}", i, ctx.x[i]).unwrap();
+    }
+    println!("=========================").unwrap();
+}
+<span class="boring">}</span></code></pre>
+<h1 id="testing"><a class="header" href="#testing">Testing</a></h1>
+<p>Of course, to test the exception handler, you need to first cause an exception.</p>
+<p>There is an instruction <code>svc</code>. Which is used to manually cause synchronous exceptions. It has many uses. But right now it will help us cause an exception so we can watch our handler handle it.</p>
+<p>So now in your <code>main.rs</code>, Somewhere in the <code>main</code> function add:</p>
+<pre><code class="language-rs">println!("\r\nWelcome to, AtOS.").unwrap();
+println!("Current EL is: EL{}", get_current_el()).unwrap();
+unsafe { core::arch::asm!("svc #0"); }
+println!("Returned from exception!").unwrap();
+</code></pre>
+<p>Also since we have a new assembly file <code>./src/kernel/exceptions.s</code>, modify <code>./build.rs</code> to also compile it along side our <code>entry.S</code></p>
+<pre><code class="language-rs">    cc::Build::new()
+        .file("entry.S")
+        .file("src/kernel/exceptions.s")
+        .compiler("aarch64-linux-gnu-gcc")
+        .flag("-c")
+        .compile("entry");
+</code></pre>
+<p>Now simply build your <code>kernel8.img</code>, and then write it to your memory card and boot it on your RPi. Or, build your <code>kernel8.img</code> and then run it in QEMU (Raspberry Pi 3b+ emulator) as follows:</p>
+<pre><code class="language-bash">$ qemu-system-aarch64 -M raspi3b -kernel kernel8.img -serial null -serial stdio
+</code></pre>
+<p>(If you don’t have qemu, you can get it from your respective package manager.)</p>
+<p>And then, we will see something like:</p>
+<pre><code>Welcome to, AtOS.
+Current EL is: EL1
+An exception has been detected :D
+=== Exception Context ===
+Type : SYNC (0)
+Source : EL1h (1)
+ELR  : 0x0000000000082598
+SPSR : 0x0000000060000345
+ESR  : 0x0000000056000000
+FAR  : 0x0000000000000000
+Registers:
+  x00 = 0x0000000000000000
+  x01 = 0x0000000000084928
+  x02 = 0x0000000000084928
+  x03 = 0x0000000000081fe0
+  x04 = 0x0000000000000000
+  x05 = 0x0000000000000001
+  x06 = 0x0000000000000000
+  x07 = 0x0000000000000000
+  x08 = 0x0000000000000000
+  x09 = 0x00000000000856b8
+  x10 = 0x000000000000000a
+  x11 = 0x0000000000000060
+  x12 = 0x0000000000000000
+  x13 = 0x0000000000000000
+  x14 = 0x0000000000000000
+  x15 = 0x0000000000000000
+  x16 = 0x0000000000000000
+  x17 = 0x0000000000000000
+  x18 = 0x0000000000000000
+  x19 = 0x000000003f215040
+  x20 = 0x0000000000000000
+  x21 = 0x00000000000833a8
+  x22 = 0x0000000000000000
+  x23 = 0x0000000000000000
+  x24 = 0x0000000000000000
+  x25 = 0x0000000000000000
+  x26 = 0x0000000000000000
+  x27 = 0x0000000000000000
+  x28 = 0x0000000000000000
+  x29 = 0x0000000000000000
+  x30 = 0x00000000000824e8
+=========================
+Returned from exception!
+</code></pre>
+<p>And that means that exception handling is successfully implemented.</p>
+<h1 id="final-codes"><a class="header" href="#final-codes">Final codes</a></h1>
+<p>If the commands for building and running are getting out of hand, you can use makefiles!
+Here is the makefile that I use:</p>
+<pre><code class="language-make">TARGET = aarch64-unknown-none
+KERNEL = at-os
+BUILD = target/$(TARGET)/release/$(KERNEL)
+
+OBJCOPY = aarch64-linux-gnu-objcopy
+
+QEMU = qemu-system-aarch64
+
+# Default target
+all: kernel8.img
+
+# Build release
+build:
+	cargo build --release --target $(TARGET)
+
+# Convert ELF to raw binary
+kernel8.img: build
+	$(OBJCOPY) $(BUILD) -O binary kernel8.img
+
+# Run in QEMU (Emulating Raspberry Pi 3B+ with Mini UART redirected to terminal)
+run:
+	$(QEMU) -M raspi3b -kernel kernel8.img -serial null -serial stdio
+
+# Clean everything
+clean:
+	cargo clean
+	rm -f kernel8.img
+</code></pre>
+<p>And then you can do <code>make clean</code> to cleanup, <code>make build</code> to compile project and produce <code>kernel8.img</code>, and <code>make run</code> to run the image in QEMU.</p>
+<p><code>linker.ld</code></p>
+<pre><code class="language-ld">ENTRY(_start)
+
+SECTIONS
+{
+    . = 0x80000;
+
+    .text :
+    {
+        *(.text.boot)
+        *(.text.vectors)
+        *(.text*)
+    }
+
+    .rodata : { *(.rodata*) }
+    .data   : { *(.data*) }
+    .bss    : { *(.bss*) }
+
+    . = ALIGN(16);
+    _stack_top = . + 0x4000;
+}
+</code></pre>
+<p><code>src/kernel/exceptions.s</code></p>
+<pre><code class="language-asm">.section ".text.vectors"
+.global el1_vectors
+
+.equ E_SYNC,   0 // to tell rust handler what the exception is
+.equ E_IRQ,    1
+.equ E_FIQ,    2
+.equ E_SERROR, 3
+
+.equ FROM_EL1t, 0
+.equ FROM_EL1h, 1
+.equ FROM_EL064, 2
+.equ FROM_EL032, 3
+
+// VECTOR TABLE FOR EXCEPTIONS AT EL1
+
+.align 11              // 2^11 = 2048 alignment
+
+el1_vectors:
+
+b   el11t_sync
+.space 124
+b   el11t_irq
+.space 124
+b   el11t_fiq
+.space 124
+b   el11t_serror
+.space 124
+
+b   el11h_sync
+.space 124
+b   el11h_irq
+.space 124
+b   el11h_fiq
+.space 124
+b   el11h_serror
+.space 124
+
+b   el1064_sync
+.space 124
+b   el1064_irq
+.space 124
+b   el1064_fiq
+.space 124
+b   el1064_serror
+.space 124
+
+b   el1032_sync
+.space 124
+b   el1032_irq
+.space 124
+b   el1032_fiq
+.space 124
+b   el1032_serror
+.space 124
+
+
+// HANDLERS FOR EL1 EXCEPTIONS
+
+.macro SAVE_REG
+    stp     x0,  x1,  [sp, #0x08]
+    stp     x2,  x3,  [sp, #0x18]
+    stp     x4,  x5,  [sp, #0x28]
+    stp     x6,  x7,  [sp, #0x38]
+    stp     x8,  x9,  [sp, #0x48]
+    stp     x10, x11, [sp, #0x58]
+    stp     x12, x13, [sp, #0x68]
+    stp     x14, x15, [sp, #0x78]
+    stp     x16, x17, [sp, #0x88]
+    stp     x18, x19, [sp, #0x98]
+    stp     x20, x21, [sp, #0xA8]
+    stp     x22, x23, [sp, #0xB8]
+    stp     x24, x25, [sp, #0xC8]
+    stp     x26, x27, [sp, #0xD8]
+    stp     x28, x29, [sp, #0xE8]
+    str     x30,      [sp, #0xF8]
+    
+    mrs     x0, ELR_EL1
+    str     x0, [sp, #0x100]
+
+    mrs     x0, SPSR_EL1
+    str     x0, [sp, #0x108]
+
+    mrs     x0, ESR_EL1
+    str     x0, [sp, #0x110]
+
+    mrs     x0, FAR_EL1
+    str     x0, [sp, #0x118]
+.endm
+
+.macro LOAD_REG
+    // load these first so x1 won't be needed after
+    ldr     x1, [sp, #0x100]
+    msr     ELR_EL1, x1
+
+    ldr     x1, [sp, #0x108]
+    msr     SPSR_EL1, x1
+    // we do not need to load back the other two registers
+
+    ldp     x0,  x1,  [sp, #0x08]
+    ldp     x2,  x3,  [sp, #0x18]
+    ldp     x4,  x5,  [sp, #0x28]
+    ldp     x6,  x7,  [sp, #0x38]
+    ldp     x8,  x9,  [sp, #0x48]
+    ldp     x10, x11, [sp, #0x58]
+    ldp     x12, x13, [sp, #0x68]
+    ldp     x14, x15, [sp, #0x78]
+    ldp     x16, x17, [sp, #0x88]
+    ldp     x18, x19, [sp, #0x98]
+    ldp     x20, x21, [sp, #0xA8]
+    ldp     x22, x23, [sp, #0xB8]
+    ldp     x24, x25, [sp, #0xC8]
+    ldp     x26, x27, [sp, #0xD8]
+    ldp     x28, x29, [sp, #0xE8]
+    ldr     x30,      [sp, #0xF8]
+.endm
+
+// handling them
+.macro SET_EXCEPTION_ARG type source
+    mov     w9, #\type
+    strb    w9, [sp]
+    mov     w9, #\source
+    strb    w9, [sp, #1]
+    mov     x0, sp
+.endm
+
+.macro HANDLE_EXCEPTION type source
+    sub     sp, sp, #0x120 // allocating space for etype + esource + gprs + 4 u64 reg
+    // make sure sp is aigned to 16 bytes for rust handler according to arm standard
+
+    // save registers
+    SAVE_REG
+
+    // call rust handler with correct arg
+    SET_EXCEPTION_ARG \type \source
+    bl      handle_exception_el1
+
+    // load back the registers
+    LOAD_REG
+
+    add     sp, sp, #0x120 // restore sp
+
+    eret // handling completed :)
+.endm
+
+el11t_sync:
+    HANDLE_EXCEPTION E_SYNC FROM_EL1t
+    
+el11t_irq:
+    HANDLE_EXCEPTION E_IRQ FROM_EL1t
+
+el11t_fiq:
+    HANDLE_EXCEPTION E_FIQ FROM_EL1t
+
+el11t_serror:
+    HANDLE_EXCEPTION E_SERROR FROM_EL1t
+
+
+el11h_sync:
+    HANDLE_EXCEPTION E_SYNC FROM_EL1h
+
+el11h_irq:
+    HANDLE_EXCEPTION E_IRQ FROM_EL1h
+
+el11h_fiq:
+    HANDLE_EXCEPTION E_FIQ FROM_EL1h
+
+el11h_serror:
+    HANDLE_EXCEPTION E_SERROR FROM_EL1h
+
+
+el1064_sync:
+    HANDLE_EXCEPTION E_SYNC FROM_EL064
+
+el1064_irq:
+    HANDLE_EXCEPTION E_IRQ FROM_EL064
+
+el1064_fiq:
+    HANDLE_EXCEPTION E_FIQ FROM_EL064
+
+el1064_serror:
+    HANDLE_EXCEPTION E_SERROR FROM_EL064
+
+
+el1032_sync:
+    HANDLE_EXCEPTION E_SYNC FROM_EL032
+
+el1032_irq:
+    HANDLE_EXCEPTION E_IRQ FROM_EL032
+
+el1032_fiq:
+    HANDLE_EXCEPTION E_FIQ FROM_EL032
+
+el1032_serror:
+    HANDLE_EXCEPTION E_SERROR FROM_EL032
+</code></pre>
+<p><code>src/kernel/exceptions.rs</code></p>
+<pre><code class="language-rs">use crate::println;
+
+#[repr(u8)]
+#[derive(Copy, Clone)]
+pub enum ExceptionType {
+    _SYNC,
+    _IRQ,
+    _FIQ,
+    _SE,
+}
+
+#[repr(u8)]
+#[derive(Copy, Clone)]
+pub enum ExceptionSource {
+    _EL1t,
+    _EL1h,
+    _EL064,
+    _EL032,
+}
+
+
+#[repr(C)]
+pub struct ExceptionContext {
+    pub etype: ExceptionType, // u8
+    pub esource: ExceptionSource, // u8
+    pub _padding: [u8; 6], // because this struct follows c style repr
+    pub x: [u64; 31],   // x0–x30
+    pub elr: u64,
+    pub spsr: u64,
+    pub esr: u64,
+    pub far: u64,
+}
+
+// called by `exceptions.s`
+#[no_mangle]
+pub extern "C" fn handle_exception_el1(ctx: &amp;mut ExceptionContext) {
+    
+    println!("An exception has been detected :D").unwrap();
+    
+    // printing the full context for now.
+    let etype_str = match ctx.etype {
+        ExceptionType::_SYNC =&gt; "SYNC",
+        ExceptionType::_IRQ  =&gt; "IRQ",
+        ExceptionType::_FIQ  =&gt; "FIQ",
+        ExceptionType::_SE   =&gt; "SError",
+    };
+    let esource_str = match ctx.esource {
+        ExceptionSource::_EL1t =&gt; "EL1t",
+        ExceptionSource::_EL1h =&gt; "EL1h",
+        ExceptionSource::_EL064 =&gt; "EL064",
+        ExceptionSource::_EL032 =&gt; "EL032",
+    };
+    println!("=== Exception Context ===").unwrap();
+    println!("Type : {} ({})", etype_str, ctx.etype as u8).unwrap();
+    println!("Source : {} ({})", esource_str, ctx.esource as u8).unwrap();
+    println!("ELR  : {:#018x}", ctx.elr).unwrap();
+    println!("SPSR : {:#018x}", ctx.spsr).unwrap();
+    println!("ESR  : {:#018x}", ctx.esr).unwrap();
+    println!("FAR  : {:#018x}", ctx.far).unwrap();
+    println!("Registers:").unwrap();
+    for i in 0..31 {
+        println!("  x{:02} = {:#018x}", i, ctx.x[i]).unwrap();
+    }
+    println!("=========================").unwrap();
+}
+</code></pre>
+<p><code>./kernel/mod.rs</code></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod peripherals;
+pub mod exceptions;
+<span class="boring">}</span></code></pre>
+<p><code>./build.rs</code></p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("cargo:rerun-if-changed=entry.S");
+    println!("cargo:rerun-if-changed=src/kernel/exceptions.s");
+
+    cc::Build::new()
+        .file("entry.S")
+        .file("src/kernel/exceptions.s")
+        .compiler("aarch64-linux-gnu-gcc")
+        .flag("-c")
+        .compile("entry");
+}</code></pre>
+<p><code>main.rs</code></p>
+<pre><code class="language-rs">#![no_std]
+#![no_main]
+
+mod kernel;
+
+use core::panic::PanicInfo;
+
+#[no_mangle]
+pub extern "C" fn main() -&gt; ! {
+    println!("\r\nWelcome to, AtOS.").unwrap();
+    println!("Current EL is: EL{}", get_current_el()).unwrap();
+    unsafe { core::arch::asm!("svc #0"); }
+    println!("Returned from exception!").unwrap();
+
+    loop {}
+}
+
+#[panic_handler]
+fn panic(_info: &amp;PanicInfo) -&gt; ! {
+    println!("Some exception happened!").unwrap();
+    loop {}
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="serial-output.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="first-user-program.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="serial-output.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="first-user-program.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

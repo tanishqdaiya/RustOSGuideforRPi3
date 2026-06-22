@@ -1,0 +1,474 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Serial Output - Rust OS Guide for Rasperry Pi 3</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-0392ca55.css">
+        <link rel="stylesheet" href="css/chrome-fc474251.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-0ce8d503.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-3ad36685.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust OS Guide for Rasperry Pi 3</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="uart"><a class="header" href="#uart">UART</a></h1>
+<p>Imagine you had the task of sending some data, specifically, a string of characters over a wire. How would you achieve it? You would have to create a system where the characters can be expressed in the form of electronic signals and then create some standard to transmit those signals to the other person, and some standard for that other person to be able to interpret those signals back to the characters they are supposed to be.</p>
+<p>This ia a classic electronics problem, with many solutions. But one of the most common standards is the Universal Asynchronous Receiver/Transmitter, UART for short.</p>
+<p>You don’t need to know the full specifics of UART to be able to work with it in our project. So I won’t explain the details here (although it is preferred if you know them). The main thing you need to know is that in UART, for the sender, they have something called a “Write wire”, usually labelled “tx”. And then the receiver usually has a “Read wire”, usually labelled “rx”.</p>
+<p>Let’s say that the sender wishes to send some character to the receiver, in which case the sender’s tx wire is connected to the receiver’s rx wire. if the receiver also wishes to send any characters back to the sender, it must also have it’s own tx wire and the sender will need it’s own rx wire, both connected together.</p>
+<p><a href="https://vanhunteradams.com/Protocols/UART/UART.html"><img src="https://vanhunteradams.com/Protocols/UART/uart_hardware.png" alt="UART Diagram"></a></p>
+<h5 id="click-image-to-go-to-source"><a class="header" href="#click-image-to-go-to-source">(click image to go to source)</a></h5>
+<p>The communication is digital, so the tx and rx wires have a zero or one being trasmitted, but both the devices need to agree on which voltage is considered zero. for that we have the GND (ground) pin of both the devices connected together.</p>
+<h1 id="relevance"><a class="header" href="#relevance">Relevance</a></h1>
+<p>The reason we just discussed this is because this is going to be our primary mode of getting some sort of output from our RPi. Naturally the Operating System we are making is of no use if we cannot interact with it. We need to be able to somehow see what the OS is outputting (e.g. the stdout, printed statements, shell output, etc). The simplest way is to use a UART connection from the RPi to your host device (the system you’re using to make the OS). Therefore, the rest of this chapter will be dedicated to setting up the UART connection from the RPi to the host, and then implementing a basic “print” function which your OS can use to send a string to the host through the UART.</p>
+<h1 id="hardware-requirement"><a class="header" href="#hardware-requirement">Hardware requirement</a></h1>
+<p>Do note, this will require some specific hardware. The tx and rx wires of the Raspberry Pi are actually pins, but your host system likely doesn’t even have pins or wires sticking out labelled “tx” or “rx”. So you will need something called a “TTL to USB connector” (TTL end being female and USB end being male). the USB will be able to connect to your host and the TTL will be able to connect to your RPi.</p>
+<p>Now before you can begin coding, you actually need to setup the UART as well. By themselves the pins in the RPi do not work as UART tx/rx. You have to tell the RPi that they must serve as such.</p>
+<h1 id="rpi-boot-order"><a class="header" href="#rpi-boot-order">RPi Boot Order</a></h1>
+<p>Before we can learn how to setup the RPi to employ UART, we need to understand some things about the RPi3b+. Firstly, look at your Raspberry Pi closely from top. near the center you will see a chip with the “BROADCOM” company label. That is the main processor of our RPi. But it’s not actually just a CPU, it’s something called a “System on Chip” (SoC). This little processor has our GPU, the CPU, Memory Controller, Timer controllers, other chips, and of course the UART controllers. The CPU which does the fetch execute cycle is also part of this SoC. To be accurate, there are CPU cores. the RPi has four CPU cores, that means four different separate portions of hardware that can do their own fetch execute cycle, with their own sets of interrupts, stack, registers, etc.</p>
+<p>When you start your RPi, the first thing that is powered and runs is not actually any CPU core, but the GPU. This is a bit unusual from other computers. The GPU then starts the firmware and bootcode and sets up the hardware according to files like <code>config.txt</code>. Then, the kernel8.img is loaded to memory and only one of the four CPU cores is started which starts execution at address <code>0x80000</code>. Other cores remain “parked” until we decide for them to start.</p>
+<p>Now, remember that in previous chapter I suggested that you first flash some official RPi OS using the official imager, and then simply overwrite your kernel and config files to it. So you don’t have to setup most of the bootcode and firmware stuff. The only thing relevant is the <code>config.txt</code> file.</p>
+<h1 id="memory-mapped-io"><a class="header" href="#memory-mapped-io">Memory Mapped IO</a></h1>
+<p>Now, only the CPU can actually execute instructions. It is the one who does everything once it starts. How does it configure and handle the other components in the SoC? Like the Timer controllers and UART controllers and such? The RPi follows something called “Memory Mapped IO”. So instead of having separate wires and connections going from the CPU to other components, the other components have some assigned “Memory Addresses”. The components write their current state to these memory addresses, the CPU can read them just like reading any other memory address, and then write data back which is read by the components. So each component has it’s own dedicated parts of main memory which only serves as communication between the components and the CPU.</p>
+<p>Do note, of course we have multiple CPUs, multiple CPUs trying to talk to the same component can sometimes cause complications, but we’re not going to focus on multi-core system right now. Currently we will only work with one core working.</p>
+<h1 id="uart-in-rpi"><a class="header" href="#uart-in-rpi">UART in RPi</a></h1>
+<p>The SoC in the RPi has two UART components. Labeled <code>UART0</code> and <code>UART1</code>. <code>UART0</code> is of type “PL011” (PL011 doesn’t mean anything here, it’s just a way to identify the type of UART). UART1 is a Mini UART, not PL011. For basics, you just need to know PL011 UARTs are more thorough UARTs with their own clocks, more configuration options, bigger transmittion limits, etc. Mini UART is very barebones. Tied to the GPU clock, lesser transmittion size, less featured, etc.</p>
+<p>Now, it is our responsibility to tell the RPi that we wish to use a UART, and that we need to set one of the pins in our RPi to be tx and rx for the UART. Actually reading and writing can come later.</p>
+<p>To enable UART, it is simple, you merely need to add the following in your <code>config.txt</code></p>
+<pre><code class="language-toml">enable_uart=1
+</code></pre>
+<p>Now, when the RPi boots, and the GPU is setting up the system for the CPU, when it sees the <code>config.txt</code> it is going to start <code>UART1</code>, initialize it, and internally set it up so that the Pin number 8 labelled <code>GPIO14</code> will act as the tx wire, and pin number 10 labelled <code>GPIO15</code> will act as rx wire. and pin number 6 will act as the ground pin. Refer to the Pin diagram below.</p>
+<p><a href="https://www.electronicwings.com/raspberry-pi/raspberry-pi-uart-communication-using-python-and-c"><img src="https://www.electronicwings.com/storage/PlatformSection/TopicContent/305/description/Raspberry%20pi%203%20UART%20pins.png" alt="UART Diagram"></a></p>
+<h5 id="click-image-to-go-to-source-1"><a class="header" href="#click-image-to-go-to-source-1">(click image to go to source)</a></h5>
+<p>Now, your CPU can simply communicate to <code>UART1</code> what string it wishes to send to the host, by writing to the correct addresses for <code>UART1</code>. <code>UART1</code> will correctly convert it to digital signals and send it to the correct pins. So the setup is technically complete on RPi side.</p>
+<p>Something to note is that enabling UART also causes <code>UART0</code> to be mapped to the bluetooth module of the RPi. We’re not going to discuss this for now.</p>
+<h1 id="uart-on-host-machine"><a class="header" href="#uart-on-host-machine">UART on host machine</a></h1>
+<p>It’s actually pretty easy to setup on the host machine. You just need to install a tool which will manage UART for you. In this project I use minicom. It’s as simple as using an installation command. It differs based on your OS. You can refer to the your host system’s package distributor to get it. For me on Arch Linux it was:</p>
+<p><code>sudo pacman -S minicom</code></p>
+<h1 id="connection"><a class="header" href="#connection">Connection</a></h1>
+<p>Your TTL to USB cable will have four TTL. Connect the Green cable to rx (pin number 10, GPIO15), the White cable to tx (pin number 8, GPIO14), and the black cable to GND (pin number 6). Note that you also have a red cable. It carries a high 3.3V or 5V voltage depending on your host’s configuration. Either way you are NOT SUPPOSED TO CONNECT IT TO ANYTHING ON YOUR RASPBERRY PI. It will destroy your RPi, you do not need it for the UART to work. Just connect the three wires and USB to your host system.</p>
+<p>Then, to start minicom. Run following immediately after connecting the USB to the laptop:
+<code>dmesg | tail</code>
+This will show you something like “xxxx converter connected to <code>ttyUSBx</code>”</p>
+<p>Remember that last phrase. and use it in the following command:</p>
+<p><code>sudo minicom -D /dev/ttyUSBx -b 115200</code>
+where you replace <code>ttyUSBx</code> with the last word in the previous command output.</p>
+<p>Note the number in the end. That is the <code>BAUD RATE</code> of our UART communication. It basically means the rate at which the data will be transfered. You can find resources online to learn more about it. 115200 is the baudrate that the UART1 will be set to by default.</p>
+<p>That’s all!!! Now anything your RPi outputs can be seen in your minicom window! you can close minicom whenever you’re done by: <code>Ctrl+A</code>, and then press <code>X</code> on keyboard.</p>
+<h1 id="implementation"><a class="header" href="#implementation">Implementation</a></h1>
+<p>Finally, we can get to actually implementing the print function in our operating system!</p>
+<p>If we go through the <a href="https://pip-assets.raspberrypi.com/categories/579-raspberry-pi-zero/documents/RP-008249-DS-1-bcm2835-peripherals.pdf">official documentation of our broadcom SoC</a></p>
+<p>You can find under the “UART1” topic the relevant memory addresses that CPU can read and write from to manipulate the UART1 into doing what we want it to do.</p>
+<p>All these addresses are called “Registers”. Note that these differ from the registers on our CPU. Unlike the CPU registers, these registers are physical tiny blocks of memory on the UART1. However the SoC maps these registers to the main memory addresses so our CPU can read and write to them.</p>
+<p>In the official listing of the registers of UART1, you can see all of them have different tasks. Some of them can be written to for changing the BAUD rate, some are read only which you (your cpu) can read you check certain statuses. Some are for setting up the UART1. However our GPU already has set up most things while parsing the <code>config.txt</code>. So all you need to do is check if the <code>UART1</code> is currently accepting bytes to send to TX wire (by checking bit 5 in the <code>AUX_MU_LSR_REG</code> register) and then just writing the byte you want to send, to the <code>AUX_MU_IO_REG</code> register. To read or write to these registers you simply read or write to their corrosponding memory addresses as mentioned in the official documentation. <code>0x7E215040</code> for <code>AUX_MU_IO_REG</code> and <code>0x7E215054</code> for <code>AUX_MU_LSR_REG</code>.</p>
+<p>Here is how the implementation goes:</p>
+<pre><code class="language-rs">use core::{fmt::Write, ptr::{read_volatile, write_volatile}};
+
+const MMIO_BASE: usize = 0x3F000000;
+const AUX_BASE: usize = MMIO_BASE + 0x215000;
+const AUX_MU_IO: usize = AUX_BASE + 0x40;
+const AUX_MU_LSR: usize = AUX_BASE + 0x54;
+
+pub struct Uart;
+
+impl Uart {
+    pub fn write_byte(&amp;self, c: u8) {
+        unsafe {
+            while read_volatile(AUX_MU_LSR as *const u32) &amp; 0x20 == 0 {}
+            write_volatile(AUX_MU_IO as *mut u32, c as u32);
+        }
+    }
+}
+
+impl Write for Uart {
+    fn write_str(&amp;mut self, s: &amp;str) -&gt; core::fmt::Result {
+        for b in s.bytes() {
+            self.write_byte(b);
+        }
+        Ok(())
+    }
+}
+</code></pre>
+<p>now you can simply write a character to UART1 using</p>
+<pre><code class="language-rs">let uart = Uart;
+uart.write_byte(b'A');
+</code></pre>
+<p>According to the documentation bit 5 in <code>AUX_MU_LSR_REG</code> is set to 1 when UART1 is able to accept a byte meant to be sent to TX. So in <code>write_byte()</code> we simply wait till the value of said register is of the form <code>X1XXXXX</code> and not <code>X0XXXXX</code>. And when it is the former, we know we can send a byte, which we do by writing to <code>AUX_MU_IO_RED</code> address. From their UART1 will send the bytes to the tx pin and thus to the host system, where you will be able to see it in your minicom window.</p>
+<h1 id="traits-in-rust"><a class="header" href="#traits-in-rust">Traits in Rust</a></h1>
+<p>Note that other than just implementing the basic function write_byte, we also implemented something called “<code>Write</code>” for “<code>Uart</code>”. “<code>Write</code>” is actually something what’s called a “Trait” in Rust. Essentially, you must be familiar with object oriented programming. The child of a certain class inherits all the functions and features of the parent class. In a way, you end up with a system where you can create functions which only take objects which inherit from some parent class. Or you could create a child class which inherits from a parent class, so the child class has all the convenient methods and features of the parent class.</p>
+<p>However in Rust we have a more flexible system for achieving something similar. Sometimes, maybe we have an object that already inherits from some other parent, and we cannot change who it inherits from for whatever reason. But we still want it to inherit methods and features from some useful class. That’s how traits function. In Rust instead of making a class be a child of some parent class, you have another option of inheritence, where you can implement a “Trait” to your class. For example if you implement a trait called “Write” for your class, suddenly your class will inherit all the useful features and methods involved in the “Write trait”. Suddenly you will unlock all the methods that come with the <code>Write</code> trait, all without having to change your class’s parent. This is very powerful and very useful.</p>
+<p>In order to implement some trait in your Rust class/struct, you need to define some base foundation level methods or parameters that are needed for the trait to build upon and work. Some very rudimentary featurese that the trait itself will expect you to define for it to use. For the Write trait, such a thing is the “write_str” method. You must make it take in a reference to self, and then a <code>&amp;str</code> argument, and it must return a <code>core::fmt::Result</code> datatype.</p>
+<p>The advantage of implementing the <code>Write</code> trait to our <code>Uart</code> is suddenly you inlock the <code>Uart.write_fmt</code> method. This is useful in string formatting. Because the <code>write_fmt</code> method automatically handles string formatting.</p>
+<h1 id="println"><a class="header" href="#println"><code>println!</code></a></h1>
+<p>Technically you can already print things. E.g.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut uart = Uart;
+uart.write_fmt(
+    core::format_args!("x = {}", 42)
+).unwrap();
+<span class="boring">}</span></code></pre>
+<p>However, this is quite ugly and I’d rather not type all that out everytime I wish to print something. Firstly let’s wrap this up in a clean little function called <code>_print</code></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn _print(args: core::fmt::Arguments) -&gt; core::fmt::Result {
+    let mut uart = Uart;
+    uart.write_fmt(args)?;
+    Ok(())
+}
+<span class="boring">}</span></code></pre>
+<p>Notice that if we wanted to use this, we would still need to type out something like</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>_print(core::format_args!("x = {}", 42));
+<span class="boring">}</span></code></pre>
+<p>to eliminate the <code>core::format_args</code> part, we can further wrap this function into a macro.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[macro_export]
+macro_rules! print {
+    ($($arg:tt)*) =&gt; ({
+        $crate::kernel::peripherals::_print(
+            core::format_args!($($arg)*)
+        )
+    });
+}
+<span class="boring">}</span></code></pre>
+<p>And that’s your <code>print!</code> macro! Take your time studying the syntax, but the main crux is that it takes all the arguments you write in <code>print!(...)</code> and calls the <code>_print</code> function with all your arguments wrapped up in the proper <code>_print</code> argument syntax.</p>
+<p>And now, if instead of just passing <code>format_args!</code> to <code>_print</code>, if you wrap it into another <code>format_args!</code> with base string for formatting as <code>{}\r\n</code>, and THEN pass it to the function you get:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[macro_export]
+macro_rules! println {
+    ($($args:tt)*) =&gt; ({
+        $crate::kernel::peripherals::_print(
+            core::format_args!("{}\r\n", core::format_args!($($args)*))
+        )
+    });
+}
+<span class="boring">}</span></code></pre>
+<p>Which is our <code>println!</code>! You can now call this as simply:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("\r\nWelcome to, AtOS.").unwrap();
+<span class="boring">}</span></code></pre>
+<p>Now just ensure all this is in some file which is actually compiled by the Rust compiler, compile the project, build your <code>kernel8.img</code>, and write it to your RPi memory card. Then connect your UART cable as described and power on your RPi. And you’ll see your output!</p>
+<pre><code>Welcome to, AtOS.
+</code></pre>
+<h1 id="final-codes"><a class="header" href="#final-codes">Final codes</a></h1>
+<p><code>./kernel/peripherals.rs</code></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use core::{fmt::Write, ptr::{read_volatile, write_volatile}};
+
+const MMIO_BASE: usize = 0x3F000000;
+const AUX_BASE: usize = MMIO_BASE + 0x215000;
+const AUX_MU_IO: usize = AUX_BASE + 0x40;
+const AUX_MU_LSR: usize = AUX_BASE + 0x54;
+
+pub struct Uart;
+
+impl Uart {
+    pub fn write_byte(&amp;self, c: u8) {
+        unsafe {
+            while read_volatile(AUX_MU_LSR as *const u32) &amp; 0x20 == 0 {}
+            write_volatile(AUX_MU_IO as *mut u32, c as u32);
+        }
+    }
+}
+
+impl Write for Uart {
+    fn write_str(&amp;mut self, s: &amp;str) -&gt; core::fmt::Result {
+        for b in s.bytes() {
+            self.write_byte(b);
+        }
+        Ok(())
+    }
+}
+
+pub fn _print(args: core::fmt::Arguments) -&gt; core::fmt::Result {
+    let mut uart = Uart;
+    uart.write_fmt(args)?;
+    Ok(())
+}
+
+#[macro_export]
+macro_rules! print {
+    ($($arg:tt)*) =&gt; ({
+        $crate::kernel::peripherals::_print(
+            core::format_args!($($arg)*)
+        )
+    });
+}
+
+#[macro_export]
+macro_rules! println {
+    ($($args:tt)*) =&gt; ({
+        $crate::kernel::peripherals::_print(
+            core::format_args!("{}\r\n", core::format_args!($($args)*))
+        )
+    });
+}
+<span class="boring">}</span></code></pre>
+<p><code>./kernel/mod.rs</code></p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod peripherals;
+<span class="boring">}</span></code></pre>
+<p><code>main.rs</code></p>
+<pre class="playground"><code class="language-rust">#![no_std]
+#![no_main]
+
+mod kernel;
+
+use core::panic::PanicInfo;
+
+#[no_mangle]
+pub extern "C" fn main() -&gt; ! {
+    println!("\r\nWelcome to, AtOS.").unwrap();
+    loop {}
+}
+
+#[panic_handler]
+fn panic(_info: &amp;PanicInfo) -&gt; ! {
+    println!("Some exception happened!").unwrap();
+    loop {}
+}</code></pre>
+<p>The next repository state snapshot link will be provided after exceptions are implemented.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="baremetal-rust.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="exception-handling.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="baremetal-rust.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="exception-handling.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

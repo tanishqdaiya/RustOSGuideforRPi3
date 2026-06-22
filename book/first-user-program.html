@@ -1,0 +1,482 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>First User Program - Rust OS Guide for Rasperry Pi 3</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-0392ca55.css">
+        <link rel="stylesheet" href="css/chrome-fc474251.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-0ce8d503.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-3ad36685.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust OS Guide for Rasperry Pi 3</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="user-processes"><a class="header" href="#user-processes">User Processes</a></h1>
+<p>Your operating system is not for running by itself. Ultimately of course the goal would be for it to run processes for the user, and for the user to be able to run whatever process they want on it. Which, of course, our OS will need to achieve in a safe manner. Without letting the user processes access the hardware through any CPU or MMIO registers which could be dangerous. Our ultimate goal for our operating system would be to facilitate a safe usage of hardware by the processes, in a asynchronous manner. That is, in a manner where multiple processes can run at the same time.</p>
+<h1 id="but-what-is-a-process"><a class="header" href="#but-what-is-a-process">But what is a Process?</a></h1>
+<p>Your computer or phone may have many different apps or programs on it. Normally something like your calculator app is not running on your device. It is usually stored on your storage/disk. However, when you wish to open the calculator app, somehow your operating system turns that bit of program on your disk into a running functioning execution of code. To put it plainly, the operating system reads the instructions and data of the app, and writes it to the memory (RAM). And then it sets <code>PC</code> to the first instruction meant to be executed from this newly loaded set of instructions in memory. Execution then continues and your app appears to run.</p>
+<p>However, your app/program is still on your disk. It’s not as if when the program is loaded to memory, it is erased from the disk. If that were the case, then every time a power outage happened in the middle of execution, your app would disappear from your device (since RAM memory is lost upon power loss). One could say that the program and data of the application on your disk is just there for your OS to load the correct instructions into memory. However, once those instructions are loaded into memory and they began executing, what do you call them? What do you call this bit of chunk in your memory that is executing instructions of your application? It needs a name to. And we call it a “Process”.</p>
+<p>Simply put, a process is running instance in memory of any program. At a bare minimum the way of creating a process is pretty similar to loading our <code>kernel8.img</code>. For a process, you go through its data/files on the disk to figure out what its image in memory will look like. And then you simply place it in memory at an appropriate memory location. Then you set a stack pointer for it, and simply set <code>PC</code> to the entry point of that process, i.e. the first instruction meant to execute for this new set of instructions. However, it differs from our <code>kernel8.img</code> in the sense that our operating system will keep track of processes and give them an identity. They will have a unique identification number, a name, information about who created them, their memory addresses, etc. Our operating system will then control how they interact with the hardware and decide which process gets to run at the moment. We will also manage new processes running and terminating.</p>
+<h1 id="loading-a-simple-process"><a class="header" href="#loading-a-simple-process">Loading a simple process</a></h1>
+<p>A process will have many different parts to it. Also, deciding where to place the process and how to prevent it from accessing MMIO addresses will be a complicated procedure covered under Memory Management. Memory management is something which we will implement after we have some basic processes running and executing together on the CPU. For now, we will first create a process image on our host system itself, and just include it in our <code>kernel8.img</code>. Since it is included in <code>kernel8.img</code>, it will be loaded alongside to memory when RPi loads <code>kernel8.img</code> to memory. From their our kernel will copy that process image from <code>kernel8.img</code> section, over to where it is actually supposed to be.</p>
+<p>How do we decide where to place it? First of all, the user processes will be compiled in a manner extremely similar to how our kernel is compiled right now. We will create a separate cargo project named “user” which will also target baremetal AArch64 Raspberry Pi platform. And exactly like how our kernel project has a linking script which tells our compiler where the kernel will be loaded in memory (which is at 0x80000), we will also have a linker script in the <code>user</code> project, where instead of 0x80000, we will decide where we will place our process in memory. We will then write the linker script to start at our chosen address (any free address in memory can work).</p>
+<p>Then again, the same way we first compile our OS project to an ELF, then a kernel8.img is dumped out of that elf. We will also dump an image from the compiled ELF produced in the user project. And then this image will be loaded by our running OS kernel into memory at the correct intended location.</p>
+<p>Then for starting the execution of the loaded program. We can simply check the original compiled ELF to find out the entry point address for the image. Then simply jumping to that address in memory.</p>
+<p>However, recall that we actually are supposed to have user programs to run in EL0. And also that any running program executing in EL0 is actually going to use the <code>SP_EL0</code> register to find the stack pointer. So we will need to setup that as well. It is a very similar process to how we dropped from EL2 to EL1 into our kernel. As we will see.</p>
+<h1 id="user-project"><a class="header" href="#user-project">User project</a></h1>
+<p>Firstly lets start off by creating said user project. with the following in our project directory at <code>src/</code>.</p>
+<p><code>cargo new user</code></p>
+<p>Then <code>cargo.toml</code> can be something like:</p>
+<pre><code class="language-toml">[package]
+name = "user"
+version = "0.1.0"
+edition = "2024"
+authors = ["ZackyGameDev &lt;zaacky2456@gmail.com&gt;"]
+</code></pre>
+<p>Next up, in this project we will have two things we need to write.</p>
+<ol>
+<li>
+<p><strong>The different user programs.</strong> Of course we will train our OS to handle multiple processes running on it at the same time. And for achieving that, we are going to need different user programs that will be loaded into the memory at separate places at the same time.</p>
+</li>
+<li>
+<p><strong>a common standard library.</strong> Right now our user programs are going to be able to access MMIO memory address freely. However, in the future we are going to limit it to prevent user programs from doing that. But then how will a user program print something to the output if it cannot access UART registers through MMIO? The answer is that when the user program requires some operation which needs to access MMIO or any other priviledged/dangerous feature, it will need to send a request to kernel. These request are handled through “syscalls”. And all of these syscalls will be accessible to the user program in common module that is generally called the standard library.</p>
+</li>
+</ol>
+<p>The standard library also defines higher level featuers which aren’t syscalls by themselves, but may rely heavily on syscalls to function. Or provide other structures and methods that a common user might need (for e.g. <code>String</code> struct in <code>std</code> in Rust).</p>
+<p>The way we are going to do this is that the entire user crate that we have created will be a space for our stdlib source code. create a file <code>src/lib.rs</code> and unlike <code>main.rs</code>, <code>lib.rs</code> signifies to rust compiler that this project is meant to be used as a library for other rust projects. Once it is done we are going to create another directory <code>src/bin/</code> and within this directory will be our user programs that will use the stdlib that we write.</p>
+<h1 id="writing-the-first-user-program"><a class="header" href="#writing-the-first-user-program">Writing the first user program</a></h1>
+<p>Next, in <code>src/bin/</code> directory create a new files named whatever you want. For example <code>init.rs</code>. In rust, all the files in the <code>bin/</code> directory are compiled into separate individual output binaries. And you guessed it, they will be able to use our <code>lib.rs</code> as the stdlib. For now let us just focus on compiling a user program and getting it loaded and executing in the RPi memory. We will look into writing stdlib some other time. Write your <code>init.rs</code> as another baremetal code similar to our kernel’s <code>main.rs</code>.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>#![no_std]
+#![no_main]
+
+<span class="boring">fn main() {
+</span>use user::println;
+
+#[unsafe(no_mangle)]
+pub extern "C" fn _start() -&gt; ! {
+    println!("hello this code is running in the init program!").unwrap();
+
+    let mut x = 1;
+    println!("x = {}", x).unwrap();
+    x += 1;
+    println!("x = {}", x).unwrap();
+    
+    println!("init program is done working, it will now loop forever.").unwrap();
+    loop {}
+}
+
+use core::panic::PanicInfo;
+#[panic_handler]
+fn panic(_info: &amp;PanicInfo) -&gt; ! {
+    println!("Some error occurred in the init program!").unwrap();
+    loop {}
+}
+<span class="boring">}</span></code></pre>
+<p>Now, you will notice that I am using a <code>println!</code> macro in this code. This is because ultimately when this code is compiled and loaded and running on the machine, it’s not like we ourselves will have a way to confirm that it is running if it is not outputing something somewhere. So for that, just like how we created our own print functionality in <code>kernel::peripherals</code>, we will do similarly for this user crate.</p>
+<p>Formally, that print functionality in this user code is going to be completely different from the kind written in <code>kernel::peripherals</code>. Remember, ultimately we are going to take away the user program’s ability to freely touch the UART MMIO addresses. How will the user programs (with our stdlib) write to the output if they cannot actually access the peripherals? The answer is that instead of letting the user programs do that, we’ll write our <code>println!</code> functionality in stdlib in such a way, so that instead of directly writing to UART like the kernel, it simply takes the string to print and passes it to the kernel through something called a “trap exception”. And then the kernel will print the string for the user program, and then handle the control back to the user program.</p>
+<p>This concept is called “syscalls”. In this scenario we say that the user program will make a syscall to the kernel; requesting the kernel to do a priviledged move (e.g. writing data to hardware MMIO for printing to UART). We will formally introduce and learn how to implement this procedure in next chapters.</p>
+<p>For now, our main focus is first getting the user process in the memory and running. Since currently we have done nothing related to securing the MMIO addresses from the user process, by default currently they can access the entire hardware peripherals. So for the sake of testing we can just copy the contents of the entire <code>kernel/peripherals.rs</code> to our <code>lib.rs</code>. Make sure you rename the references in the macro to occur in <code>user::</code> instead of <code>$crate::kernel</code>.</p>
+<p>Now anything in lib.rs can be imported/included in our <code>bin/</code> codes using the <code>user</code> crate name. Which in our scenario we do <code>use user::println;</code></p>
+<h2 id="linker"><a class="header" href="#linker">Linker</a></h2>
+<p>Now as for the linker, we need to tell the compiler where we are going to load the program for execution. On the raspberry pi 3b+ you can pick any address between your kernel ending address to roughly <code>0x3EFFFFFF</code>. For safety we will just pick some address away from our kernel at <code>0x200_000</code>. That is where I’m choosing to put our process for now. You can choose any safe address at this stage, however ultimately it doesn’t matter when we get to implementing MMU.</p>
+<p>Here is what the linker script looks like</p>
+<pre><code>ENTRY(_start)
+
+SECTIONS
+{
+    /* once memory virtualization works, i will change this to start at 0x00000000 */
+    . = 0x200000;
+
+    .text : {
+        *(.text*)
+    }
+
+    .rodata : {
+        *(.rodata*)
+    }
+
+    .data : {
+        *(.data*)
+    }
+
+    .bss : {
+        *(.bss*)
+    }
+}
+</code></pre>
+<h2 id="compilation"><a class="header" href="#compilation">Compilation</a></h2>
+<p>now all you need to do is to compile your code as usual.</p>
+<pre><code class="language-bash">$ cargo build
+</code></pre>
+<p>And then to convert the compiled binary to an image we can load:</p>
+<pre><code class="language-bash">$ aarch64-linux-gnu-objcopy \
+target/aarch64-unknown-none/debug/init \
+-O binary init.bin
+</code></pre>
+<p>Now you have an init.bin that your RPi can execute.</p>
+<p>However you also need to find out the entry point of this image, since we did not explicitly mention the entry point address in the linker script. To find out where it is, you can use the <code>readelf</code> command to read from the compiled binary.</p>
+<pre><code class="language-bash">$ readelf -h target/aarch64-unknown-none/debug/init 
+</code></pre>
+<p>This will read the ELF file’s header information and provide you some information. Look for something like:</p>
+<pre><code>(...)
+  Entry point address:               0x2002f8
+(...)
+</code></pre>
+<p>That is the address of the first instruction meant to be executed in our <code>init.bin</code> image.</p>
+<h1 id="running-the-first-user-program"><a class="header" href="#running-the-first-user-program">Running the first user program</a></h1>
+<p>Now, you have the image and you know where to start the execution of the image. All you need to do now is include the <code>init.bin</code> image data in your <code>kernel8.img</code> and make it copy it to the correct address <code>0x200_000</code> in memory. Then, to start execution of it from the entry point address.</p>
+<p>All of this has to be performed as you do a drop to EL0. Since user programs normally are supposed to run in EL0.</p>
+<p>First, to include the user program bytes in our kernel we can simply use the macro <code>include_bytes!("path/to/file")</code>. This macro, during compilation, reads the given file in the argument and expands the macro into a <code>&amp;'static [u8; N]</code> where N is the number of bytes in the given file. So basically if you write <code>let image = include_bytes!("user.bin")</code> it is the equivalent of writing <code>let image: &amp;[u8] = &amp;[0x4A, 0X24, 0X23, ...];</code> where the right side of <code>=</code> is literally all the bytes from the <code>user.bin</code> file in the correct order.</p>
+<p>And then of course, the user program will refer to the stack pointer whenever it wants to allocate memory for any variables. And since we plan on dropping to EL0 before execution of the user program, we will need to put the stack pointer in <code>SP_EL0</code> register, since that is what programs running in EL0 use for stack pointer.</p>
+<p>All of this can be implemented as follows:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn load_and_run_init_process() {
+    const INIT_PROCESS_IMAGE: &amp;[u8] = include_bytes!("user/init.bin");
+    const INIT_PROCESS_ADDR: usize = 0x200000;
+    unsafe {
+        core::ptr::copy_nonoverlapping(
+            INIT_PROCESS_IMAGE.as_ptr(),
+            INIT_PROCESS_ADDR as *mut u8,
+            INIT_PROCESS_IMAGE.len(),
+        );
+    }
+
+    // i got this entry point from the compiled init elf by doing `readelf -h init`.
+    const ENTRY_POINT: usize = 0x2002f8;
+    const STACK_TOP: usize = (INIT_PROCESS_ADDR + INIT_PROCESS_IMAGE.len() + 0x4000) &amp; !0xf; // 16 byte aligned stack top 
+    // right now i have just hardcoded some stack pointer for EL0
+
+    enter_user(ENTRY_POINT, STACK_TOP);
+}
+<span class="boring">}</span></code></pre>
+<p>And then the entry into the program can be done the same way we dropped from EL2 into EL1 at <code>main.rs</code>’s <code>main()</code>, as following:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn enter_user(entry_point: usize, stack_top: usize) {
+    unsafe {
+        core::arch::asm!(
+            "
+            msr sp_el0, {stack}
+            msr elr_el1, {entry}
+    
+            mov x0, xzr
+            msr spsr_el1, x0
+    
+            eret
+            ",
+            stack = in(reg) stack_top,
+            entry = in(reg) entry_point,
+            options(noreturn)
+        );   
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>As you can see, we load <code>SP_EL0</code> to stack pointer and <code>ELR_EL1</code> register to the entry point of the user program. We then set <code>SPSR_EL1</code> to zero, which signifies that after <code>ERET</code> we drop to EL0. This all is ultimately set in stone by the final <code>eret</code> at the end. Thus, after this <code>ERET</code> the execution will go to the loaded user program in memory at the first instruction’s byte. At EL0. And execution will continue on from there.</p>
+<p>From here all that is left to do is to call it.</p>
+<p>Remove the exception handling testing related lines of code in <code>main()</code> if you still have them from the last chapter. And call the function in place of it.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>load_and_run_init_process();
+<span class="boring">}</span></code></pre>
+<p>Now if you <code>make</code> and then <code>make run</code> you will see output as follows:</p>
+<pre><code class="language-bash">$ qemu-system-aarch64 -M raspi3b -kernel kernel8.img -serial null -serial stdio
+
+Welcome to, AtOS.
+Current EL is: EL1
+hello this code is running in the init program!
+x = 1
+x = 2
+init program is done working, it will now loop forever.
+</code></pre>
+<h1 id="postface"><a class="header" href="#postface">postface</a></h1>
+<p>Now, just like that you have a user program separate from your kernel project. Compiled separately and loaded by your kernel into memory. Running in EL0 mode as it should. However, it is still far fetched to call it a “Process”. Since currently our OS cannot track, control or facilitate the user program in anyway. Once it is loaded into memory, it is just going to run the same way our kernel was running. We are going to change this in future chapters. First we will write a new <code>println!</code> functionality for our user space which will be a proper syscall instead of our current bodge. And then we will create a way for the kernel to routinely get control back from the running user program. Letting it inspect if everything is okay or run for a while doing whatever it wants, before it chooses to give back control to a running user program.</p>
+<h1 id="final-codes"><a class="header" href="#final-codes">Final codes</a></h1>
+<p><code>main.rs</code></p>
+<pre><code class="language-rs">#![no_std]
+#![no_main]
+
+mod kernel;
+
+use core::panic::PanicInfo;
+
+#[no_mangle]
+pub extern "C" fn main() -&gt; ! {
+    println!("\r\nWelcome to, AtOS.").unwrap();
+    println!("Current EL is: EL{}", get_current_el()).unwrap();
+    unsafe { core::arch::asm!("svc #0"); }
+    println!("Returned from exception!").unwrap();
+
+    loop {}
+}
+
+#[panic_handler]
+fn panic(_info: &amp;PanicInfo) -&gt; ! {
+    println!("Some exception happened!").unwrap();
+    loop {}
+}
+</code></pre>
+<p><code>user/bin/init.rs</code></p>
+<pre><code class="language-rs">#![no_std]
+#![no_main]
+
+use user::println;
+
+#[unsafe(no_mangle)]
+pub extern "C" fn _start() -&gt; ! {
+    println!("hello this code is running in the init program!").unwrap();
+
+    let mut x = 1;
+    println!("x = {}", x).unwrap();
+    x += 1;
+    println!("x = {}", x).unwrap();
+    
+    println!("init program is done working, it will now loop forever.").unwrap();
+    loop {}
+}
+
+use core::panic::PanicInfo;
+#[panic_handler]
+fn panic(_info: &amp;PanicInfo) -&gt; ! {
+    println!("Some error occurred in the init program!").unwrap();
+    loop {}
+}
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="exception-handling.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="syscalls.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="exception-handling.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="syscalls.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-c22b7243.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>
