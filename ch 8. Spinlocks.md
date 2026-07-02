@@ -7,13 +7,6 @@ mutexes.
 
 ## Historical Background and Motivation
 
-This document aims to describe the inner workings of a spin-lock in AtOS.
-Before discussing that, first we try to motivate the requirement for it, then
-discuss the various implementation details and setup some groundwork for
-mutexes.
-
-## Historical Background and Motivation
-
 Processors in the old days used to run on a single core. This meant that there
 was only one CPU, running a scheduler and context-switching between processes.
 Things were simpler, whatever operations you needed to perform, you perform it
