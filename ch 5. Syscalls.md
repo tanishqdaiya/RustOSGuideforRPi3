@@ -40,7 +40,7 @@ Thus the kernel's exception handler executes upon the `svc` instruction. The `sv
 
 In linux kernel, different priviledged actions like "write to disk" or "read from disk" or "create new process" are all given a unique identification number. Then before `svc` the user program stores the ID of the requested priviledged action in the `x8` register, which the kernel reads and indentifies. Once the kernel is done performing the operation requested it then does ERET from the exception back to where EL0 did `svc`. Any relevant return values are also stored in GPRs.
 
-## Implementing Syscalls
+## Implementing Syscall Pipeline with `print` syscall
 
 We are going to do a similar procedure. For the first syscall we will try to implement a `println!` macro for the user space which works using syscalls instead of accessing the MMIO directly. 
 
@@ -279,6 +279,152 @@ And that is all! Once the syscall handler returns out to the exception handler, 
 
 And that is the syscall pipeline! Now whenever our user program wants to print anything, it will be able to seemingly do it without touching the MMIOs. This is more secure since the kernel can now inspect what the user program wants to be done. And accordingly either accept the request or complain about it being unsafe.
 
+## `input` Handling in Kernel
+
+Similar to how the print syscall has been implemented, you can also implement the input syscall. However you would notice that so far we have not yet implemented UART input for even the kernel. So let's start by improving our UART module to also include input handling.
+
+Here I will only show you the basic most simple implementation which was implemented at the start. Later on other contributors helped improve the factoring and organization of the UART module. However for now this will work just as well. 
+
+```rs
+pub fn read_byte(&self) -> u8 {
+    unsafe {
+        while (read_volatile(AUX_MU_LSR_REG) & 0x01) == 0  { core::hint::spin_loop(); }
+        (read_volatile(AUX_MU_IO_REG) & 0xFF) as u8
+    }
+}
+```
+
+Similar to how you can write to the `AUX_MU_IO_REG` to output characters to the UART tx, if you read from said register, the hardware will return to you the UART input. The above function `read_byte` is implemented as `kernel::peripherals::Uart::read_byte`. 
+
+If there is currently no input byte pending to be read (which can be checked with `read_volatile(AUX_MU_LSR_REG) & 0x01) == 0`), then we stall in an input loop, waiting for an input.
+
+You can read more details about this in the documentations mentioned in Chapter 2.
+
+Now that you have a function for reading bytes out of the UART, you can write wrappers that use this repeat this function to read out entire lines. 
+
+```rs
+use crate::kernel::peripherals::Uart;
+
+pub fn getch() -> u8 {
+    let uart = Uart;
+
+    loop {
+        let c = uart.read_byte();
+
+        if c == b'\r' {
+            uart.write_byte(b'\n');
+            return b'\n';
+        }
+
+        if c == b'\n' {
+            continue;
+        }
+
+        uart.write_byte(c);
+        return c;
+    }
+}
+
+pub fn getline(buf: &mut [u8]) -> usize {
+    let mut r = 0;
+
+    while r < buf.len() {
+        let c = getch();
+
+        buf[r] = c;
+        r += 1;
+
+        if c == b'\n' {
+            break;
+        }
+    }
+
+    r
+}
+```
+
+this is all very simple. We have a wrapper which reads characters from the UART. Since normally new line is represented by `\r\n`, we do tho conversion to `\n` for the sake of modern standards and consistency.  
+
+It also prints the same character to the output. This is because by default the input bytes do not appear on the UART output for the user. So we need to manually display each byte being typed for the user.
+
+We also implement a simple `getline()` wrapper for reading bytes until a newline character is reached.
+
+Now note that this input method is not perfect. We haven't handled the case if the user presses backspace and tries to edit their input, or the try to move the cursor. However for the sake of syscall implementation it is enough. 
+
+You may try to improve input handling by yourself as an exercise. Since all inputs, including backspace and arrow key movements are sent to UART input as bytes.
+
+## `input` Syscall
+
+The kernel can now take inputs. Thus, an `input` syscall can be implemented for the user space.
+
+The actual implementation is extremely similar to the `print` syscall. However instead of passing the a string's pointer and length, we have to pass it a "buffer" in which to write the input taken. A buffer is basically some memory location where data is held temporarily for the sake of transport, communication, or something else. In our case, our kernel will read input from the UART, but how will it give the input to the user program? It is not safe for the kernel to directly give the user a pointer which was defined on the kernel's stack. Because ultimately when we implement virutal memory, we are going to make it so user processes cannot even read kernel's memory for security.
+
+Thus instead, the user program passes the pointer to a variable which can hold an array of bytes. The kernel reads UART and writes the result into this variable that was created and owned by the user program. This variable is called the "buffer". And the user side of the syscall will need to pass this buffer to the kernel. 
+
+Here is a possible implementation:
+
+```rs
+pub fn sys_readline(buf: &mut [u8]) -> usize {
+    let p = buf.as_mut_ptr() as u64;
+    let l = buf.len() as u64;
+    let mut r: u64;
+
+    unsafe {
+	core::arch::asm!("svc #2",
+        inout("x0") p => r, // we're using x0 to pass arg and then read back into x0
+        in("x1") l,
+        clobber_abi("C"));
+    }
+
+    r as usize
+}
+
+```
+
+As you can see, we pass the buffer's pointer and length, and then expect back some sort of response which tells us how the it went. Which for us would be the number of bytes read. If `r` is zero in the end, you know that zero bytes were read (basically something went wrong so no input). 
+
+Similarly on the kernel side, the handler for this can be written as:
+
+```rs
+// SYSCALL #2 -- READ */
+pub fn sys_read(ctx: &mut ExceptionContext) -> core::fmt::Result {
+    let usr_bufp = ctx.x[0] as *mut u8;
+    let buf_sz = ctx.x[1] as usize;
+
+    // Invalid arguments, return 0 bytes read.
+    if usr_bufp.is_null() || buf_sz == 0 {
+        ctx.x[0] = 0;
+    	return Ok(());
+    }
+
+    let buf = unsafe {
+	    core::slice::from_raw_parts_mut(usr_bufp, buf_sz)
+    };
+
+    let r = input::getline(buf);
+    ctx.x[0] = r as u64;
+
+    Ok(())
+}
+
+```
+
+Which is also very simple. We simply make sure that the buffer passed is a valid buffer. And then cast it into a valid format for our `getline` function. Then we simply read the UART input into the location passed to us by the user program.
+
+Now all that is left to do is to index this syscall in the `syscall_handler`
+
+```rs
+match syscall_number {
+    1 => sys_print(ctx).unwrap(),
+	2 => sys_read(ctx).unwrap(),
+    _ => {
+        print!("Unknown syscall: {}", ctx.x[8]).unwrap();
+    }
+}
+```
+
+And that wraps up our input handling! We went over a very simple implementation. The reader is encouraged to use their creativity to add neat features and edge case handlings into their input handling procedure. Or orgaanizing everything into a unified `io` module, just like how my project does later on.
+
 ## Security
 
 In our case our project is small in scope so we're not going to focus on security a lot. But one method that so far the user program could try to do something malicious is instead of passing a valid string to the kernel, it might put inside `x0`, a pointer to some random data. Which will cause our kernel to panic. This is of course going to crash the kernel. We're not going to talk about handling that scenario right now, but if you wish you may take it as an exercise for yourself. Perhaps Instead of doing `sys_print(ctx).unwrap()` in syscall handler, you could make the `sys_print` function itself encode a success code in one of the GPRs which the user program can read back to know if the request was successful or not. 
@@ -289,6 +435,6 @@ The final codes can be found in my original project `AtOS`'s GitHub reposiory. A
 
 Find the files at the below link. 
 
-[github.com/ZackyGameDev/AtOS/tree/3aefd06111c004eae08ada9204a61e9242fe9a8b](https://github.com/ZackyGameDev/AtOS/tree/3aefd06111c004eae08ada9204a61e9242fe9a8b)
+[github.com/ZackyGameDev/AtOS/tree/86810abe703861413f7d3fbbfbb69ebe0081cbc9](https://github.com/ZackyGameDev/AtOS/tree/86810abe703861413f7d3fbbfbb69ebe0081cbc9)
 
-(kindly ignore the timer.rs module along with the main.rs state)
+(kindly ignore the additional code besides the one talked about in this chapter)
