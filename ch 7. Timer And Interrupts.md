@@ -60,12 +60,14 @@ So, the pipeline looks something like this:
 
 Our ultimate goal in this chapter is to set up something called a "timer interrrupt". It will be an IRQ exception that you can "schedule" ahead of time to occur after a certain duration automatically. This is the core mechanism on which our scheduler will be built. However we will talk details about that later when we implement the scheduler. First let's learn how to setup the first step of our IRQ pipeline.
 
-## Timer interrupt
+## A Scheduled Hardware Event
 
-First of all we are going to attempt to setup the first ever step of our interrupt pipeline that we discussed above. Which is actually causing the hardware event. 
+First of all we are going to attempt to setup the first ever step of our interrupt pipeline that we discussed above. Which is the step of actually causing the hardware event. 
 
-Our main goal is to make it so there is a certain exception caused into the CPU when T amount of time passes. Upon which, the timer should be reset and once again after passage of T amount of time, the exception must occur again. This will go infinitely.
+Our main goal is to make it so there is a certain exception caused into the CPU when `T` amount of time passes. Upon which, the timer should be reset and once again after passage of `T` amount of time, the exception must occur again. This will go infinitely.
 
 Sure you can have a part in your kernel where you have a rust counter variable of type integer, and you could just increment it and check if it has reached some threshhold value. And when the threshhold value is reached, you could execute `svc` instruction. After which the kernel shall reset the variable to zero and start incrementing it again. This could technically work. But it is difficult to be precise with this solution. Since if you want the `svc` to trigger every lets say 20ms, then you would need to somehow figure out what threshhold value the counter variable would need exactly 20ms to reach. Another issue here is that this relies on the execution of the kernel code for the variable incrementing and `svc` call. So you have to somehow make sure that this piece of code does not get interrupted and always run exactly the same amount of time on the CPU everytime. It also wastes CPU cycles, costing time in executing instructions to just increment a variable.
 
-There is in fact a better solution exactly for this scenario. Your CPU itself actually has features in it to cause an IRQ hardware event after a fixed amount of time. This feature is called the CPU TIMER
+There is in fact a better solution exactly for this scenario. Your CPU itself actually has features in it to cause an IRQ hardware event after a fixed amount of time. This feature is called the CPU TIMER. There is a component inside your CPU which actually has a register which it is continually incrementing, and when that register's value reaches a threshold value in another register, it causes an hardware event signal to the interrupt controller. 
+
+This is going to be our 
