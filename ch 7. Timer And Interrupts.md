@@ -14,4 +14,77 @@ Now, the full form of IRQ is "Interrupt Request". These exceptions are typically
 
 ## Hardware event to IRQ pipeline
 
-Now, whenever an hardware event occurs on your machine, in some way, the electronics on your hardware understand 
+Now, whenever an hardware event occurs on your machine, in some way, the electronics on your hardware recognize that event, identify that event, and send an appropriate exception to the CPU. Obviously it is not the CPU chip on the hardware which monitors every single peripheral and peripheral for possible events. There is a different part of the hardware which does this job. That part is called the **Interrupt Controller**.
+
+The interrupt controller is a component on the hardware whose job is to be the central hub of recognizing hardware events and notifying the CPU by sending an appropriate exception. Hardware events upon occuring are recognized by the interrupt controller (by signals received from the part of hardware where event occured). And then the interrupt controller records it, and triggers an IRQ exception to the CPU. There are two points in this pipeline which can be configured. First is the interrupt controller itself. It can be configured to choose which hardware events should cause an IRQ exception to the CPU, and which ones shouldn't. Next, the CPU itself can also be configured on if certain category of exceptions should straight up be ignored by it. 
+
+So, the pipeline looks something like this:
+
+```mermaid
+flowchart TD
+    A[Hardware Event] --> 
+    B[Interrupt Controller]
+
+    B --> C{Is the interrupt controller configured to produce an IRQ upon this hardware event?}
+
+    C -- No --> D[Nothing Happens]
+    C -- Yes --> E[CPU Receives IRQ]
+
+    E --> F{IRQ Masked?<br/>DAIF.I}
+
+    F -- Yes --> G[CPU Ignores IRQ]
+    F -- No --> H[IRQ Exception]
+    H --> I[Exception Handler]
+```
+
+```
+┌─────────────────────────────┐
+│      Hardware Event         │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│   Interrupt Controller      │
+└──────────────┬──────────────┘
+               │
+  Is the interrupt controller
+  configured to produce an IRQ   
+    upon this hardware event?
+         ┌─────┴───────┐
+         │             │
+       No│             │Yes
+         ▼             ▼
+ Nothing happens   CPU receives IRQ signal
+                       │
+                       ▼
+             is the CPU configured 
+            to accept IRQ interrupts 
+                  right now?
+             ┌────────┴──────────┐
+             │                   │
+          Yes│                   │No
+             ▼                   ▼
+      CPU ignores IRQ   An IRQ Exception occurs 
+                              in our CPU
+                                  │
+                                  ▼
+                         EL1 Exception Handler
+```
+
+
+[hardware event]
+       ↓
+[interrupt controller] 
+       ↓
+is the interrupt controller   (no)
+configured to produce an IRQ   ->  nothing happens
+upon this hardware event?
+       ↓ (yes)
+     [CPU] receives IRQ signal
+       ↓
+is the CPU configured 
+to accept IRQ interrupts 
+right now? 
+       ↓ (yes)
+An IRQ Exception occurs 
+in our CPU
