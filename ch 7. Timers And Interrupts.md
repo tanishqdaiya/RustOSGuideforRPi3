@@ -293,7 +293,7 @@ And now a function to set the timer to a certain amount of seconds:
     }
 ```
 
-The code here should be understandable. All we do is calculate $seconds \times frequency$ to calculate the change in counter value till expected time. And then we add that value to current counter value and set it to compare value. 
+The code here should be understandable. All we do is calculate `seconds*frequency` to calculate the change in counter value till expected time. And then we add that value to current counter value and set it to compare value. 
 
 We can do a same one for lesser amount of time like milliseconds
 
