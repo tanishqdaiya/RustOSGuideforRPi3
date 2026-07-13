@@ -150,3 +150,144 @@ The value in virtual counter register "`CNTVCT_EL0`" is always exactly equal to 
 
 Now you understand well enough the ARM Generic Timers on the ARM CPU that our hardware has. And you also understand when those timers send off an IRQ hardware event signal to the interrupt controller. It is finally time to actually implement Rust abstractions that will allow you to interact with the timer easily in code. As discussed we will use the None secure physical timer. Which, is commonly just called the physical timer since the non secure part is redundant unless hypervisor or secure world timers are involved.
 
+Well, the implementation itself is actually not complicated at all. We literally just create functions which will execute appropriate assembly to tamper the relevant timer registers.
+
+Now then, let's create our `src/kernel/timer.rs`.
+
+```rs
+use crate::println;
+
+pub struct PhysicalTimer;
+```
+
+Now, before we implement functions to start timer or set timer to some seconds, let's first wrap up relevant assembly into neat inline functions. This is because it is a good habit to reduce the amount of time you have to write unsafe code. `asm!` macro counts as unsafe code and thus we wrap up in functions so we can just call the functions instead of using `asm!` macro everytime.
+
+```rs
+impl PhysicalTimer {
+    #[inline(always)]
+    pub fn read_cnt() -> u64 {
+        let value: u64;
+        unsafe {
+            core::arch::asm!(
+                "mrs {val}, CNTPCT_EL0",
+                val = out(reg) value,
+                options(nostack, preserves_flags)
+            );
+        }
+        value
+    }
+
+    #[inline(always)]
+    pub fn read_frq() -> u64 {
+        let value: u64;
+        unsafe {
+            core::arch::asm!(
+                "mrs {val}, CNTFRQ_EL0",
+                val = out(reg) value,
+                options(nostack, preserves_flags)
+            );
+        }
+        value
+    }
+
+    #[inline(always)]
+    pub fn read_ctl() -> u64 {
+        let value: u64;
+        unsafe {
+            core::arch::asm!(
+                "mrs {val}, CNTP_CTL_EL0",
+                "isb",
+                val = out(reg) value,
+                options(nostack, preserves_flags)
+            );
+        }
+        value
+    }
+
+    #[inline(always)]
+    fn write_ctl(val: u64) {
+        unsafe {
+            core::arch::asm!(
+                "msr CNTP_CTL_EL0, {val}",
+                "isb",
+                val = in(reg) val,
+                options(nostack, preserves_flags)
+            );
+        }
+    }
+
+    #[inline(always)]
+    pub fn set_cval(new_cval: u64) {
+        unsafe {
+            core::arch::asm!(
+                "msr CNTP_CVAL_EL0, {val}",
+                "isb",
+                val = in(reg) new_cval,
+            );
+        }
+    }
+
+    #[inline(always)]
+    pub fn set_tval(new_tval: i32) {
+        unsafe {
+            core::arch::asm!(
+                "msr CNTP_TVAL_EL0, {val:w}",
+                "isb",
+                val = in(reg) new_tval,
+            );
+        }
+    }
+}
+```
+
+Now we have functions we can call to read or write to registers. Notice we how we did not create writer function for `CNTPCT_EL0` or `CNTFRQ_EL0`. This is because the first is read only, and the latter serves no purpose for writing to.
+
+We can proceed to creating functions for enabling or disabling timer, or masking or unmasking the timer hardware event IRQ. Which is done using the `bits[1:0]` of the control register.
+
+```rs
+#[inline(always)]
+    pub fn enable() {
+        let mut ctl = Self::read_ctl();
+        ctl |= 1 << 0; 
+        Self::write_ctl(ctl);
+    }
+
+    #[inline(always)]
+    pub fn disable() {
+        let mut ctl = Self::read_ctl();
+        ctl &= !1; 
+        Self::write_ctl(ctl);
+    }
+
+    #[inline(always)]
+    pub fn mask_int() {
+        let mut ctl = Self::read_ctl();
+        ctl |= 1 << 1;
+        Self::write_ctl(ctl);
+    }
+
+    #[inline(always)]
+    pub fn unmask_int() {
+        let mut ctl = Self::read_ctl();
+        ctl &= !(1 << 1);
+        Self::write_ctl(ctl);
+    }
+```
+
+And now a function to set the timer to a certain amount of seconds:
+
+```rs
+    pub fn set_seconds(seconds: u64) {
+        let freq = Self::read_frq();
+        let now = Self::read_cnt();
+
+        let ticks = freq
+            .checked_mul(seconds)
+            .expect("Physical Timer Seconds Overflow.");
+
+        Self::set_cval(now + ticks);
+        println!("[TIMER] p cval was set.. {} seconds", seconds).unwrap();
+    }
+```
+
+The code here should be understandable. All we do is calculate $seconds*frequency$ to 
