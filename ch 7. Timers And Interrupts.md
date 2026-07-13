@@ -285,9 +285,71 @@ And now a function to set the timer to a certain amount of seconds:
             .checked_mul(seconds)
             .expect("Physical Timer Seconds Overflow.");
 
-        Self::set_cval(now + ticks);
-        println!("[TIMER] p cval was set.. {} seconds", seconds).unwrap();
+        let cval = now
+            .checked_add(ticks)
+            .expect("Physical Timer CVAL Overflow.");
+
+        Self::set_cval(cval);
     }
 ```
 
-The code here should be understandable. All we do is calculate $seconds*frequency$ to 
+The code here should be understandable. All we do is calculate $seconds \times frequency$ to calculate the change in counter value till expected time. And then we add that value to current counter value and set it to compare value. 
+
+We can do a same one for lesser amount of time like milliseconds
+
+```rs
+    pub fn set_milliseconds(milliseconds: u64) {
+        let freq = Self::read_frq();
+        let now = Self::read_cnt();
+
+        let ticks = freq
+            .checked_mul(milliseconds)
+            .expect("Physical Timer Milliseconds Overflow.")
+            / 1000;
+
+        let cval = now
+            .checked_add(ticks)
+            .expect("Physical Timer CVAL Overflow.");
+
+        Self::set_cval(cval);
+        dprintln!("[TIMER] p cval was set.. {} ms", milliseconds);
+    }
+```
+
+And now finally a function to start the timer after the compare value has been set through some function:
+
+```rs
+    #[inline(always)]
+    pub fn start() {
+        Self::unmask_int();
+        Self::enable();
+    }
+```
+
+And with that our Physical Timer is now usable in our project!
+
+You can now try it out in your rust main function:
+
+```rs
+    use kernel::timer::PhysicalTimer
+
+    // testing timer.
+    PhysicalTimer::set_seconds(3);
+    PhysicalTimer::start();
+
+    loop {
+        if (PhysicalTimer::read_ctl() & 0b100) == 0b100 {
+            println!("Timer went off!").unwrap();
+            println!("The end. Make sure to power off your RPi before disconnecting it :)").unwrap();
+            loop { // if we don't enter loop here, it will keep printing that timer went off
+                delay(1_000_000);
+            }
+        }
+    }
+```
+
+Notice how in this test we check if the timer expired by checking the `bit[2]` of the control register value. Recall that this specific bit depicts if an hardware event IRQ is being fired to the interrupt register or not. 
+
+We check it this way for now because our timer may send hardware event IRQ signal to the interrupt controller, but we have not yet configured the interrupt controller to actually route it back to the CPU as an IRQ Exception. Thus our CPU currently will not receive any sort of exception or interrupt even if timer works correctly. Checking if the CTL value outputs after the correct duration is the only way to test for now.
+
+However, that will change as now we will talk about configuring the interrupt controller. So our interrupt pipeline may progress further with the timer IRQ.
