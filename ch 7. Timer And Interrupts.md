@@ -70,4 +70,22 @@ Sure you can have a part in your kernel where you have a rust counter variable o
 
 There is in fact a better solution exactly for this scenario. Your CPU itself actually has features in it to cause an IRQ hardware event after a fixed amount of time. This feature is called the CPU TIMER. There is a component inside your CPU which actually has a register which it is continually incrementing, and when that register's value reaches a threshold value in another register, it causes an hardware event signal to the interrupt controller. 
 
-This is going to be our 
+It is quite literally a small component inside the CPU chip which is literally called the "timer". There are four of this on a single CPU core in fact. Since we have 4 cores on the Raspberry Pi 3, it of course means we have total 16 of these timers. Four in each CPU. However there are other timers available also. Let's list them.
+
+1. ARM Generic Timers: These are the timers we just discussed. We will learn about these in the next heading. There's exactly four of these in each of the available cores. The four are as follows:
+  - Physical Timer `CNTP`: This is the standard timer used typically by kernels running in EL1.
+  - Virtual Timer `CNTV`: This is typically used by a guest operating system running in EL1 under a EL2 hypervisor.
+  - Hypervisor Physical Timer `CNTH`: Used by a hypervisor at EL2.
+  - Secure World Physical Timer `CNTPS`: Used by secure world framework at EL3.
+
+2. The BCM System Timer: This is one exists outside the CPU, on the overall broadcom SoC of the system. This timer is accessed by the CPU as a peripheral with MMIO. It has a 64 bit counter register being incremented at a fixed 1MHz. You can set a compare value to this in one of the four 32 bit *compare value registers*. When the lower 32 bits of the counter register are equal to any one of the compare value register values, the timer goes off. That is, an IRQ hardware event is generated that signifies the timer going off.
+
+3. The QA7 Timer: This timer exists inside the Interrupt Controller component. Can be accessed within the Interrupt Controller's MMIO. It is not generally used and only really exists for the sake of backwards compatibility on the Raspberry Pi. We will not discuss about this one.
+
+For our project, we are going to utilize the ARM Generic Timer for scheduling. Specifically the Physical timer. Also called the Physical Non Secure Timer to explicitly differentiate it fromm the Secure World Physical Timer.
+
+## ARM Generic Timers
+
+Let's first start by understanding the easiest and simplest timer. The Physical Non Secure timer.
+
+The Physical Non Secure timer works very similarly to how our hypothetical Rust solution would work. There is a register named `CNTPCT_EL0`
