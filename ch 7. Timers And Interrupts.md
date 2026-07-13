@@ -54,7 +54,7 @@ So, the pipeline looks something like this:
                                   │
                                   ▼
                       ┌───────────────────────┐
-                      │ ELI Exception Handler │
+                      │ EL1 Exception Handler │
                       └───────────────────────┘
 ```
 
