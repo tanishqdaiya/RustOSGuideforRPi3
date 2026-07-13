@@ -130,3 +130,23 @@ Functionally speaking the only use for this register is to serve as a place to s
 
 We will talk about controlling or modifying the frequency later on in this chapter. Just know that on RPI3B+, by default it is 1 MHz.
 
+## Other ARM Generic Timers
+
+There are three other timers similar to the one we discussed. However we will not use them in our project, and thus they will not be discussed in great detail. However, they are actually very similar to the one we just discussed.
+
+Both the Hypervisor Physical, and Secure World Physical Timers function exactly the same way the Non Secure Physica Timer does. They all have their own compare value, timer value, and control registers. All prefixed with their own names instead of `CNTP_`. Which is `CNTHP_` for Hypervisor Physical and `CNTPS_` for the physical secure timer. The only difference is who owns them.
+
+The Hypervisor timer is meant to be used by something running in EL2 level, called the "hypervisor". All registers of this timer are also prefixed by `_EL2`. Thus they can only be accessed by EL2 or higher levels.
+
+The Physical Secure timer is meant to be used by EL3 level software. Or by EL1 OS running in secure world controlled by something from EL3. Registers here are suffixed with `_EL1`. Because though mainly for EL3, it can be configured to allow usage from EL1.
+
+Both of these are called "Physical" in their name. This is because both of these use the same incrementing counter register for their compare value conditions. Which is the `CNTPCT_EL0` register. 
+
+The Virtual Timer is a little different. Unlike others, it does not rely on the incrementing physical counter register for comparisions. Instead, it uses the *Virtual Counter Register*, `CNTVCT_EL0`. Everything else is the same. It has it's usual compare value, timer value, and control registers. All prefixed with `CNTV_`. Also suffixed with `_EL0` similar to the non secure physical timer. It is essentially the non secure physical timer which replaces the Physical Counter register for the Virtual Counter register.
+
+The value in virtual counter register "`CNTVCT_EL0`" is always exactly equal to `CNTPCT_EL0 - CNTVOFF_EL2`. Where `CNTVOFF_EL2` is a 64 bit register defining *some* offset. Do the naming and formula give you any hints? The `CNTVCT_EL0` register basically maintains a value at some offset from the `CNTPCT_EL0` register. This offset is defined by EL2 level program since the `CNTVOFF_EL2` register can only be accessed by EL2. The name stands for "**C**OU**NT**ER **V**IRTUAL **OFF**SET **EL2**". If no EL2 program is running to set this offset, it defaults to zero. In which case the `CNTVCT_EL0` is the same as `CNTPCT_EL0`.
+
+## Implementing the NS-Physical Timer
+
+Now you understand well enough the ARM Generic Timers on the ARM CPU that our hardware has. And you also understand when those timers send off an IRQ hardware event signal to the interrupt controller. It is finally time to actually implement Rust abstractions that will allow you to interact with the timer easily in code. As discussed we will use the None secure physical timer. Which, is commonly just called the physical timer since the non secure part is redundant unless hypervisor or secure world timers are involved.
+
