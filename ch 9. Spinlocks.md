@@ -130,12 +130,12 @@ required target assembly.
 ### The `acquire` function
 
 Now, having defined the structure, let us look at how we have implemented the
-`acquire` function, which lets a thread executing inside the process acquire the
-lock, effectively spinning and consuming CPU cycles while waiting.  Since this
-is a Spinlock implementation, the thread that acquires the lock acquires it and
-does its work while the other thread that also tries to acquire the lock after
-the aforementioned thread has already acquired waits for the acquiring thread to
-release the lock.
+`acquire` function. This function lets a thread executing inside the process
+acquire the lock, effectively spinning and consuming CPU cycles while waiting.
+Since this is a Spinlock implementation, the if two threads try to acquire the
+same resources, the first one to acquire the resource (through atomicity) works
+on the resource holding the lock while the other thread waits for the acquring
+thread to release the lock.
 
 Try to read the following code:
 
